@@ -2406,10 +2406,10 @@ $("body").bind("DOMNodeInserted", function () {
     $("#rc-tabs-0-panel-crowd_list").length > 0 &&
     $("#xzh-btn-one-click-clear").length == 0
   ) {
-    $("div.filter-wrapper__G2KGX div")
-      .eq(1)
+    $(".button-wrapper__M8J0Q")
+      // .eq(1)
       .append(
-        `<button id="xzh-btn-one-click-clear" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>一键清除</span></button>`
+        `<button id="xzh-btn-one-click-clear" type="button" class="ant-btn css-r3n9ey ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>一键清除</span></button>`
       );
 
     $("#xzh-btn-one-click-clear").bind("click", function () {
