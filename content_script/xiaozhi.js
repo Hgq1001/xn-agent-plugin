@@ -854,14 +854,14 @@ $("body").append(`
     </div>
 `);
 
-if ($(".search-box__1ieoZ").length > 0 && $("#xzh-btn-edit-task").length == 0) {
+if ($(".search-box___SIbW").length > 0 && $("#xzh-btn-edit-task").length == 0) {
   $(".search-box__1ieoZ").append(
     `<button id="xzh-btn-delete-task" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量删除任务</span></button>`
   );
 }
 
-if ($(".search-box__TisDE").length > 0 && $("#xzh-btn-edit-task").length == 0) {
-  $(".search-box__TisDE").append(
+if ($(".search-box___SIbW").length > 0 && $("#xzh-btn-edit-task").length == 0) {
+  $(".search-box___SIbW").append(
     `<button id="xzh-btn-delete-task" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量删除任务</span></button>`
   );
 }
