@@ -35,7 +35,10 @@ var MAX_SEARCH_LABEL_KEYWORD_LENGTH = 10; // 单个搜索标签下最大关键�
 
 var EXCLUDE_DAYS_LIU_LAN = ["1", "3", "7", "15", "30"]; // 商品标签-浏览 天数
 var EXCLUDE_DAYS_JIA_GOU_ADN_FU_KUAN = ["1", "3", "7", "15", "30", "60", "90"]; // 商品标签-付款-加购 天数
-let COMPARE_CONFIG = { gte: "大于等于 ", lte: "介于 " }; // 比较
+let COMPARE_CONFIG = {
+  gte: "大于等于 ",
+  lte: "介于 "
+}; // 比较
 
 const USER_DATA_SOURCE_PIN_UPLOAD = 1; // 上传买家pin或手机号
 const USER_DATA_SOURCE_TAG = 2; // 标签
@@ -780,7 +783,10 @@ window.addEventListener(
   "message",
   function (e) {
     if (e.data) {
-      const { render, result } = e.data;
+      const {
+        render,
+        result
+      } = e.data;
       if (render) {
         renderUI(result);
       }
@@ -789,7 +795,14 @@ window.addEventListener(
   false
 );
 
-function globalPostMessage({ url, type, api, params, headers, ...props }) {
+function globalPostMessage({
+  url,
+  type,
+  api,
+  params,
+  headers,
+  ...props
+}) {
   window.postMessage({
     params,
     url,
@@ -801,7 +814,9 @@ function globalPostMessage({ url, type, api, params, headers, ...props }) {
 }
 
 function renderUI(result) {
-  const { api } = result;
+  const {
+    api
+  } = result;
   switch (api) {
     case "login": // 登录
       loginToRender(result);
@@ -855,14 +870,8 @@ $("body").append(`
 `);
 
 if ($(".search-box___SIbW").length > 0 && $("#xzh-btn-edit-task").length == 0) {
-  $(".search-box__1ieoZ").append(
-    `<button id="xzh-btn-delete-task" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量删除任务</span></button>`
-  );
-}
-
-if ($(".search-box___SIbW").length > 0 && $("#xzh-btn-edit-task").length == 0) {
   $(".search-box___SIbW").append(
-    `<button id="xzh-btn-delete-task" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量删除任务</span></button>`
+    `<button id="xzh-btn-delete-task" type="button" class="ant-btn css-r3n9ey ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>批量删除任务</span></button>`
   );
 }
 
@@ -1019,9 +1028,9 @@ $("#xzh-btn-edit-task").bind("click", function () {
       update_data[id].maxPinCount = $(
         "table.data tr[data-id=" + id + "] td input.maxPinCount"
       ).val();
-      update_data[id].maxPinCount = update_data[id].maxPinCount
-        ? update_data[id].maxPinCount
-        : sendUpperLimit;
+      update_data[id].maxPinCount = update_data[id].maxPinCount ?
+        update_data[id].maxPinCount :
+        sendUpperLimit;
       console.log(update_data[id]);
 
       setTimeout(() => {
@@ -1140,7 +1149,11 @@ function getTaskList(startPage = 1, endPage, list = []) {
     contentType: "application/json",
     success: function (res) {
       if (res.data) {
-        const { result, pageCount, currentPage } = res.data;
+        const {
+          result,
+          pageCount,
+          currentPage
+        } = res.data;
         taskList = [...taskList, ...result];
         if (currentPage === endPage || pageCount === currentPage) {
           let taskIds = taskList.map((task) => task.id);
@@ -1193,12 +1206,18 @@ function getAiList() {
 
 // 获取小智账号信息
 function getUserInfo() {
+  console.log('getUserInfo--->111')
   $.ajax({
     url: "/mkt/api/session/context",
     type: "GET",
     dataType: "json",
     success: function (res) {
-      const { botId, venderId, venderName } = res.data;
+      console.log('getUserInfo--->', res)
+      const {
+        botId,
+        venderId,
+        venderName
+      } = res.data;
       localStorage.setItem("botId", botId);
       localStorage.setItem("venderId", venderId);
       localStorage.setItem("venderName", venderName);
@@ -1228,6 +1247,100 @@ function setSendMax() {
     },
   });
 }
+
+// 获取发送上限
+function getBudget() {
+  console.log("getBudget--->11111");
+  let trafficBudget = null;
+  $.ajax({
+    url: "/mkt/api/mt/config/budget/query",
+    type: "GET",
+    async: false,
+    dataType: "json",
+    success: function (res) {
+      console.log("getBudget--->budget", res);
+      const {
+        ddMax,
+        richDdMax,
+        smsMax,
+        richSmsMax
+      } = res.data
+      trafficBudget = {
+        ddMax,
+        richDdMax,
+        smsMax,
+        richSmsMax
+      }
+    },
+  });
+  return trafficBudget
+}
+
+// 获取流量单价详情
+function getPriceDetail() {
+  console.log("getBudget--->11111");
+  let priceDetail = null;
+  $.ajax({
+    url: "/mkt/api/mt/config/price/detail",
+    type: "GET",
+    async: false,
+    dataType: "json",
+    success: function (res) {
+      console.log("getPriceDetail--->priceDetail", res);
+      const {
+        ddPriceBig,
+        richDdPriceBig,
+        smsPriceBig,
+        richSmsPriceBig
+      } = res.data
+      priceDetail = {
+        ddPriceBig,
+        richDdPriceBig,
+        smsPriceBig,
+        richSmsPriceBig
+      }
+    },
+  });
+  return priceDetail
+}
+
+// 计算当日营销成本
+function getMaxMarketingCost() {
+  let trafficBudget = getBudget();
+  let priceDetail = getPriceDetail();
+  console.log('getMaxMarketingCost--->budget', trafficBudget)
+  console.log('getMaxMarketingCost--->priceDetail', priceDetail)
+  if (!trafficBudget) {
+    const dailyMarketingCostsElementError1 = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因发送上限无法获取，故无法计算成本</div>`);
+    $(".search-box___SIbW").append(dailyMarketingCostsElementError1)
+    return
+  }
+  if (!priceDetail) {
+    const dailyMarketingCostsElementError2 = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因单价无法获取，故无法计算成本</div>`);
+    $(".search-box___SIbW").append(dailyMarketingCostsElementError2)
+    return
+  }
+  let {
+    ddMax,
+    richDdMax,
+    smsMax,
+    richSmsMax
+  } = trafficBudget
+  let {
+    ddPriceBig,
+    richDdPriceBig,
+    smsPriceBig,
+    richSmsPriceBig
+  } = priceDetail;
+  const dailyMarketingCosts = ddPriceBig * (ddMax > 1000 ? ddMax : 0) +
+    richDdPriceBig * (richDdMax > 1000 ? richDdMax : 0) +
+    smsPriceBig * (smsMax > 1000 ? smsMax : 0) +
+    richSmsPriceBig * (richSmsMax > 1000 ? richSmsMax : 0)
+  console.log('dailyMarketingCosts--->', dailyMarketingCosts)
+  const dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：${Math.floor(dailyMarketingCosts)}元</div>`);
+  $(".search-box___SIbW").append(dailyMarketingCostsElement)
+}
+getMaxMarketingCost()
 
 // 批量
 $("body").bind("DOMNodeInserted", function () {
@@ -1326,6 +1439,7 @@ $("body").bind("DOMNodeInserted", function () {
       getUserInfo();
       getAiList();
 
+
       var category = getAllCategory();
       // console.log("CATEGORY", category);
 
@@ -1356,22 +1470,25 @@ $("body").bind("DOMNodeInserted", function () {
             alert("请设置发送上限！");
             return;
           } else {
-            Object.keys(sendMaxData).map;
             sendMaxConfig = {
               ...sendMaxConfig,
               咚咚: Number(sendMaxData["咚咚"]),
               富媒体咚咚: Number(sendMaxData["富媒体咚咚"]),
               短信: Number(sendMaxData["短信"]),
               富媒体短信: Number(sendMaxData["富媒体短信"]),
+              // 营销成本: Number(sendMaxData["营销成本"])
             };
             console.log("sendMaxConfig--->", sendMaxConfig);
             if (Object.values(sendMaxConfig).every((value) => !value)) {
               alert("发送上限不能全为空");
               return;
             }
+            // if (!sendMaxConfig['营销成本'] || sendMaxConfig['营销成本'] < 0) {
+            //   alert("营销成本不能为空且必须大于0");
+            //   return;
+            // }
             setSendMax();
           }
-
           console.log("当前环境---->", isUat);
           // 每次进入投放页面重置人群包id
           crowdOptions_ = {};
@@ -1422,8 +1539,7 @@ $("body").bind("DOMNodeInserted", function () {
             console.log("解析--->圈选条件--->conditionsArr", conditionsArr);
 
             if (
-              labelType.length === 4 &&
-              ["商品", "竞品", "跨品"].some((item) => labelType.includes(item))
+              labelType.length === 4 && ["商品", "竞品", "跨品"].some((item) => labelType.includes(item))
             ) {
               // 商品标签 1-sku;2-sku;3-关键词;4-品类
               console.log("标签类型--->商品标签--->111");
@@ -1451,8 +1567,7 @@ $("body").bind("DOMNodeInserted", function () {
               console.log("标签类型--->搜索标签--->222");
               data[i]["关键词"] = conditionsArr.join(",");
             } else if (
-              labelType.length === 4 &&
-              ["店铺"].some((item) => labelType.includes(item))
+              labelType.length === 4 && ["店铺"].some((item) => labelType.includes(item))
             ) {
               // 店铺标签 1-shopId(1:本店铺);2-shopId(1:本店铺);3-sku;4-关键词;5-品类
               console.log("标签类型--->店铺标签--->333");
@@ -1475,8 +1590,7 @@ $("body").bind("DOMNodeInserted", function () {
                 data[i]["圈选品类"] = [explode(conditionsArr[4])];
               }
             } else if (
-              labelType.length === 4 &&
-              ["品类"].some((item) => labelType.includes(item))
+              labelType.length === 4 && ["品类"].some((item) => labelType.includes(item))
             ) {
               console.log("标签类型--->品类标签--->444");
               // 1-品类；2-品类；3-关键词
@@ -1610,12 +1724,12 @@ $("body").bind("DOMNodeInserted", function () {
             // data[i]["圈选商品"] = explode(data[i]["圈选商品"]);
             data[i]["关键词"] = explode(data[i]["关键词"]);
             data[i]["投放日期"] =
-              launchDate && data[i]["投放时间"]
-                ? new Date(launchDate + " " + data[i]["投放时间"])
-                : null;
-            data[i]["预估人数"] = data[i]["预估人数"]
-              ? parseInt(data[i]["预估人数"])
-              : 0;
+              launchDate && data[i]["投放时间"] ?
+              new Date(launchDate + " " + data[i]["投放时间"]) :
+              null;
+            data[i]["预估人数"] = data[i]["预估人数"] ?
+              parseInt(data[i]["预估人数"]) :
+              0;
             data[i]["排除任务"] = explode(data[i]["排除任务"]);
             data[i]["填空商品"] = explode(data[i]["空商品"]);
 
@@ -1697,20 +1811,19 @@ $("body").bind("DOMNodeInserted", function () {
           for (i = 0; i < data.length; i++) {
             var exsku_num = data[i]["竞品"] ? data[i]["竞品"].length : 0;
             if (jp && jp.hasOwnProperty(data[i]["品类"])) {
-              exsku_num += jp[data[i]["品类"]]["SKU"]
-                ? [...new Set(jp[data[i]["品类"]]["SKU"])].filter(
-                    (item) => item
-                  ).length
-                : 0;
+              exsku_num += jp[data[i]["品类"]]["SKU"] ? [...new Set(jp[data[i]["品类"]]["SKU"])].filter(
+                  (item) => item
+                ).length :
+                0;
             }
             var skuid = data[i]["圈选商品"]
               .map(
                 (item) =>
-                  '<a href="https://item.jd.com/' +
-                  item +
-                  '.html" target="_blank">' +
-                  item +
-                  "</a>"
+                '<a href="https://item.jd.com/' +
+                item +
+                '.html" target="_blank">' +
+                item +
+                "</a>"
               )
               .join(",");
             if (data[i]["关键词"]) {
@@ -1725,9 +1838,9 @@ $("body").bind("DOMNodeInserted", function () {
             if (data[i]["投放渠道"] && !is_check) {
               channel =
                 '<span class="' +
-                (data[i]["投放渠道"] == "短信"
-                  ? "xzh-label-dx"
-                  : "xzh-label-dd") +
+                (data[i]["投放渠道"] == "短信" ?
+                  "xzh-label-dx" :
+                  "xzh-label-dd") +
                 '">' +
                 data[i]["投放渠道"] +
                 "</span>";
@@ -1757,17 +1870,17 @@ $("body").bind("DOMNodeInserted", function () {
               '</td><td id="pincount_' +
               i +
               '"' +
-              (data[i]["投放渠道"] == "短信"
-                ? ' class="sms_' + data[i]["文案"] + '"'
-                : "") +
+              (data[i]["投放渠道"] == "短信" ?
+                ' class="sms_' + data[i]["文案"] + '"' :
+                "") +
               ">" +
-              (is_check
-                ? "计算中"
-                : data[i]["文案转链"]
-                ? '<span class="xzh-label-red" id="xzh-content-status-' +
-                  i +
-                  '">等待转链</span>'
-                : "等待投放") +
+              (is_check ?
+                "计算中" :
+                data[i]["文案转链"] ?
+                '<span class="xzh-label-red" id="xzh-content-status-' +
+                i +
+                '">等待转链</span>' :
+                "等待投放") +
               "</td></tr>";
           }
           // sHtml += '<tfoot><tr><td colspan="4">排除竞品：'+jp.length+'个</td></tr></tfoot>';
@@ -1897,8 +2010,8 @@ $("body").bind("DOMNodeInserted", function () {
                   spacer: data[i]["填空商品"],
                   sku: [
                     ...[...new Set(curSku)]
-                      .filter((item) => item)
-                      .filter((item, index, arr) => index !== arr.length - 1),
+                    .filter((item) => item)
+                    .filter((item, index, arr) => index !== arr.length - 1),
                     lastSku,
                   ], //排重
                 };
@@ -2062,10 +2175,8 @@ $("body").bind("DOMNodeInserted", function () {
                 continue;
               }
               option["搜索"] = {
-                days:
-                  data[i]["行为"] == "搜索"
-                    ? data[i]["圈选天数"]
-                    : data[i]["搜索天数"],
+                days: data[i]["行为"] == "搜索" ?
+                  data[i]["圈选天数"] : data[i]["搜索天数"],
                 keywords: data[i]["关键词"],
               };
             }
@@ -2109,8 +2220,7 @@ $("body").bind("DOMNodeInserted", function () {
                 }
 
                 setTimeout(function () {
-                  getPinCount(
-                    {
+                  getPinCount({
                       ...options[i],
                       data: data[i],
                       number: i,
@@ -2146,15 +2256,15 @@ $("body").bind("DOMNodeInserted", function () {
               if (
                 options[i] == undefined ||
                 $("#pincount_" + i)
-                  .parent()
-                  .hasClass("ok")
+                .parent()
+                .hasClass("ok")
               ) {
                 continue;
               }
               if (
                 $("#pincount_" + i)
-                  .parent()
-                  .hasClass("error")
+                .parent()
+                .hasClass("error")
               ) {
                 $("#pincount_" + i)
                   .parent()
@@ -2170,9 +2280,9 @@ $("body").bind("DOMNodeInserted", function () {
                 setTimeout(function () {
                   console.log(
                     "这是第" +
-                      (i + 1) +
-                      "个任务，时间为：" +
-                      moment().format("YYYY-MM-DD HH:mm:ss")
+                    (i + 1) +
+                    "个任务，时间为：" +
+                    moment().format("YYYY-MM-DD HH:mm:ss")
                   );
                   if (
                     exclude_task_id &&
@@ -2549,7 +2659,9 @@ function importTask() {
 }
 
 function importTaskToRender(result) {
-  const { res } = result;
+  const {
+    res
+  } = result;
   var task_list = [
     [
       "任务名",
@@ -2592,9 +2704,9 @@ function importTaskToRender(result) {
 
     var task_name = prefix(res[i].task_id, 7);
     if (res[i].brand_name && res[i].cid3_name) {
-      res[i].brand_name = res[i].brand_name.indexOf("（")
-        ? res[i].brand_name.substr(0, res[i].brand_name.indexOf("（"))
-        : res[i].brand_name;
+      res[i].brand_name = res[i].brand_name.indexOf("（") ?
+        res[i].brand_name.substr(0, res[i].brand_name.indexOf("（")) :
+        res[i].brand_name;
       task_name =
         res[i].brand_name.substr(0, 4) +
         res[i].cid3_name.substr(0, 4) +
@@ -2635,35 +2747,35 @@ function getSkuData() {
   sHtml += sku
     .map(
       (item, i) =>
-        "<tr><td>" +
-        (i + 1) +
-        '</td><td id="xzh_data_sku_' +
-        i +
-        '"><a href="https://item.jd.com/' +
-        item +
-        '.html" target="_blank">' +
-        item +
-        '</a></td><td id="xzh_data_price_' +
-        i +
-        '">-</td><td id="xzh_data_pv_' +
-        i +
-        '">-</td><td id="xzh_data_order_' +
-        i +
-        '">-</td><td id="xzh_data_cr_' +
-        i +
-        '">-</td><td id="xzh_data_aurp_' +
-        i +
-        '" class="xzh-label-bold">-</td><td id="xzh_data_comm_' +
-        i +
-        '">-</td><td><p><span class="xzh-label-dx">信</span> <span id="xzh_data_roi_dx1_' +
-        i +
-        '">-</span> <span class="xzh-label-comma">|</span> <span id="xzh_data_roi_dx2_' +
-        i +
-        '">-</span></p><p><span class="xzh-label-dd">咚</span> <span id="xzh_data_roi_dd1_' +
-        i +
-        '">-</span> <span class="xzh-label-comma">|</span> <span id="xzh_data_roi_dd2_' +
-        i +
-        '">-</span></p></td></tr>'
+      "<tr><td>" +
+      (i + 1) +
+      '</td><td id="xzh_data_sku_' +
+      i +
+      '"><a href="https://item.jd.com/' +
+      item +
+      '.html" target="_blank">' +
+      item +
+      '</a></td><td id="xzh_data_price_' +
+      i +
+      '">-</td><td id="xzh_data_pv_' +
+      i +
+      '">-</td><td id="xzh_data_order_' +
+      i +
+      '">-</td><td id="xzh_data_cr_' +
+      i +
+      '">-</td><td id="xzh_data_aurp_' +
+      i +
+      '" class="xzh-label-bold">-</td><td id="xzh_data_comm_' +
+      i +
+      '">-</td><td><p><span class="xzh-label-dx">信</span> <span id="xzh_data_roi_dx1_' +
+      i +
+      '">-</span> <span class="xzh-label-comma">|</span> <span id="xzh_data_roi_dx2_' +
+      i +
+      '">-</span></p><p><span class="xzh-label-dd">咚</span> <span id="xzh_data_roi_dd1_' +
+      i +
+      '">-</span> <span class="xzh-label-comma">|</span> <span id="xzh_data_roi_dd2_' +
+      i +
+      '">-</span></p></td></tr>'
     )
     .join("");
   sHtml += "</table>";
@@ -2682,8 +2794,7 @@ function getSkuData() {
       }, i * 100);
       // 查询浏览
       setTimeout(function () {
-        getPinCount(
-          {
+        getPinCount({
             浏览: {
               days: days,
               sku: sku[i],
@@ -2704,8 +2815,7 @@ function getSkuData() {
       }, i * t);
       // 查询付款订单
       setTimeout(function () {
-        getPinCount(
-          {
+        getPinCount({
             付款: {
               days: days,
               sku: sku[i],
@@ -2782,12 +2892,12 @@ function setSkuData(i) {
 }
 
 function totalExpense() {
-  let xzh_dx_fee = localStorage.getItem("xzh_dx_fee_" + pin)
-    ? localStorage.getItem("xzh_dx_fee_" + pin)
-    : "0.23";
-  let xzh_dd_fee = localStorage.getItem("xzh_dd_fee_" + pin)
-    ? localStorage.getItem("xzh_dd_fee_" + pin)
-    : "0.06";
+  let xzh_dx_fee = localStorage.getItem("xzh_dx_fee_" + pin) ?
+    localStorage.getItem("xzh_dx_fee_" + pin) :
+    "0.23";
+  let xzh_dd_fee = localStorage.getItem("xzh_dd_fee_" + pin) ?
+    localStorage.getItem("xzh_dd_fee_" + pin) :
+    "0.06";
   var days = $("input[name=xzh-radio-days]:checked").val();
 
   var sHtml =
@@ -2913,8 +3023,7 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
           if (filterTaskList[i].nextExecTime) {
             addDataTable({
               pinCount: pinCount,
-              maxPinCount:
-                pinCount < maxPinCount || !maxPinCount ? pinCount : maxPinCount,
+              maxPinCount: pinCount < maxPinCount || !maxPinCount ? pinCount : maxPinCount,
               successPercent: 0,
               date: filterTaskList[i].nextExecTime,
               channel: channel,
@@ -2928,14 +3037,12 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
           ) {
             addDataTable({
               pinCount: pinCount,
-              maxPinCount:
-                pinCount < maxPinCount || !maxPinCount ? pinCount : maxPinCount,
-              successPercent: filterTaskList[i].successPinPercent
-                ? filterTaskList[i].successPinPercent.substr(
-                    0,
-                    filterTaskList[i].successPinPercent.length - 1
-                  )
-                : 0,
+              maxPinCount: pinCount < maxPinCount || !maxPinCount ? pinCount : maxPinCount,
+              successPercent: filterTaskList[i].successPinPercent ?
+                filterTaskList[i].successPinPercent.substr(
+                  0,
+                  filterTaskList[i].successPinPercent.length - 1
+                ) : 0,
               date: new Date().daydiff(-1).format("yyyy-MM-dd"),
               channel: channel,
               index: 1,
@@ -2959,14 +3066,12 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
 
         addDataTable({
           pinCount,
-          maxPinCount:
-            pinCount < maxPinCount || !maxPinCount ? pinCount : maxPinCount,
-          successPercent: filterTaskList[i].successPinPercent
-            ? filterTaskList[i].successPinPercent.substr(
-                0,
-                filterTaskList[i].successPinPercent.length - 1
-              )
-            : 0,
+          maxPinCount: pinCount < maxPinCount || !maxPinCount ? pinCount : maxPinCount,
+          successPercent: filterTaskList[i].successPinPercent ?
+            filterTaskList[i].successPinPercent.substr(
+              0,
+              filterTaskList[i].successPinPercent.length - 1
+            ) : 0,
           date: datetime.format("yyyy-MM-dd"),
           channel: channel,
           index: j,
@@ -2983,8 +3088,7 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
         last_date = last_date ? last_date : new Date();
         // 24小时ROI
         $.ajax({
-          url:
-            "/mkt/api/mt/task/stats?dtFrom=" +
+          url: "/mkt/api/mt/task/stats?dtFrom=" +
             last_date.format("yyyy-MM-dd") +
             "&dtTo=" +
             new Date().format("yyyy-MM-dd") +
@@ -3001,8 +3105,7 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
               var channel = list[i].successSmsUserNum ? "dx" : "dd";
               // 周期任务，加数
               if (repeat.indexOf(list[i].taskId) > -1) {
-                addDataTable(
-                  {
+                addDataTable({
                     pinCount: list[i].targetUserNum,
                     maxPinCount: list[i].targetUserNum,
                     successPinCount: list[i].successUserNum,
@@ -3021,9 +3124,9 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
               if (!pay_amount[index][channel]) {
                 pay_amount[index][channel] = 0;
               }
-              pay_amount[index][channel] += list[i].payAmount
-                ? list[i].payAmount
-                : 0;
+              pay_amount[index][channel] += list[i].payAmount ?
+                list[i].payAmount :
+                0;
             }
             // 计算ROI
             console.log("计算ROI--->", pay_amount);
@@ -3033,8 +3136,7 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
 
         // 7日ROI
         $.ajax({
-          url:
-            "/mkt/api/mt/task/stats?dtFrom=" +
+          url: "/mkt/api/mt/task/stats?dtFrom=" +
             last_date.format("yyyy-MM-dd") +
             "&dtTo=" +
             new Date().format("yyyy-MM-dd") +
@@ -3051,8 +3153,7 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
               var channel = list[i].successSmsUserNum ? "dx" : "dd";
               // 周期任务，加数
               if (repeat.indexOf(list[i].taskId) > -1) {
-                addDataTable(
-                  {
+                addDataTable({
                     pinCount: list[i].targetUserNum,
                     maxPinCount: list[i].targetUserNum,
                     successPinCount: list[i].successUserNum,
@@ -3071,9 +3172,9 @@ function getTask(days = 30, page = 1, times = 0, repeat = []) {
               if (!pay_amount[index][channel]) {
                 pay_amount[index][channel] = 0;
               }
-              pay_amount[index][channel] += list[i].payAmount
-                ? list[i].payAmount
-                : 0;
+              pay_amount[index][channel] += list[i].payAmount ?
+                list[i].payAmount :
+                0;
             }
             // 计算ROI
             // console.log(pay_amount);
@@ -3110,15 +3211,18 @@ function updateDataTableRoi(data, period = 1) {
     dd: $("#xzh-fee input:last").val(),
   };
   var amount = [];
-  var total = { dx: 0, dd: 0 };
+  var total = {
+    dx: 0,
+    dd: 0
+  };
   var type = period == 1 ? "_roi_" : "_7droi_";
   for (i in data) {
     // console.log(data[i]);
     for (j in data[i]) {
       var expense =
-        ($("#xzh_" + j + "_" + i).text() == "-"
-          ? 0
-          : $("#xzh_" + j + "_" + i).text()) * fees[j];
+        ($("#xzh_" + j + "_" + i).text() == "-" ?
+          0 :
+          $("#xzh_" + j + "_" + i).text()) * fees[j];
       // console.log("expense_"+j+i, expense, data[i][j]);
       $("#xzh_" + j + type + i).text(
         expense ? Math.round(data[i][j] / expense) / 100 : 0
@@ -3139,11 +3243,9 @@ function updateDataTableRoi(data, period = 1) {
 
   // 总ROI
   var expense = {
-    dx:
-      ($("#xzh_dx_total").text() == "-" ? 0 : $("#xzh_dx_total").text()) *
+    dx: ($("#xzh_dx_total").text() == "-" ? 0 : $("#xzh_dx_total").text()) *
       fees.dx,
-    dd:
-      ($("#xzh_dd_total").text() == "-" ? 0 : $("#xzh_dd_total").text()) *
+    dd: ($("#xzh_dd_total").text() == "-" ? 0 : $("#xzh_dd_total").text()) *
       fees.dd,
   };
   $("#xzh_dx" + type + "total").text(
@@ -3172,76 +3274,76 @@ function addDataTable(data, update_percent = true) {
   }
 
   var task_total =
-    $("#xzh_task_total").text() == "-"
-      ? 1
-      : parseInt($("#xzh_task_total").text()) + 1;
+    $("#xzh_task_total").text() == "-" ?
+    1 :
+    parseInt($("#xzh_task_total").text()) + 1;
   var task_count =
-    $("#xzh_task_" + data.index).text() == "-"
-      ? 1
-      : parseInt($("#xzh_task_" + data.index).text()) + 1;
+    $("#xzh_task_" + data.index).text() == "-" ?
+    1 :
+    parseInt($("#xzh_task_" + data.index).text()) + 1;
   if (data.repeat) {
-    var task_repeat_count = $("#xzh_task_repeat_" + data.index).text()
-      ? parseInt($("#xzh_task_repeat_" + data.index).text()) + 1
-      : 1;
+    var task_repeat_count = $("#xzh_task_repeat_" + data.index).text() ?
+      parseInt($("#xzh_task_repeat_" + data.index).text()) + 1 :
+      1;
     $("#xzh_task_repeat_" + data.index).text(task_repeat_count);
     $("#xzh_task_repeat_" + data.index).show();
   }
 
-  data.successPinCount = data.successPinCount
-    ? data.successPinCount
-    : Math.round((data.successPercent * data.maxPinCount) / 100);
+  data.successPinCount = data.successPinCount ?
+    data.successPinCount :
+    Math.round((data.successPercent * data.maxPinCount) / 100);
   data.maxExpense = fees[data.channel] * data.maxPinCount;
   data.successExpense = fees[data.channel] * data.successPinCount;
 
   // console.log(data);
 
   var pre_total =
-    ($("#xzh_pre_" + data.channel + "_total").text() == "-"
-      ? 0
-      : parseInt($("#xzh_pre_" + data.channel + "_total").text())) +
+    ($("#xzh_pre_" + data.channel + "_total").text() == "-" ?
+      0 :
+      parseInt($("#xzh_pre_" + data.channel + "_total").text())) +
     data.pinCount;
   var max_total =
-    ($("#xzh_max_" + data.channel + "_total").text() == "-"
-      ? 0
-      : parseInt($("#xzh_max_" + data.channel + "_total").text())) +
+    ($("#xzh_max_" + data.channel + "_total").text() == "-" ?
+      0 :
+      parseInt($("#xzh_max_" + data.channel + "_total").text())) +
     data.maxPinCount;
   var pin_total =
-    ($("#xzh_" + data.channel + "_total").text() == "-"
-      ? 0
-      : parseInt($("#xzh_" + data.channel + "_total").text())) +
+    ($("#xzh_" + data.channel + "_total").text() == "-" ?
+      0 :
+      parseInt($("#xzh_" + data.channel + "_total").text())) +
     data.successPinCount;
   var budget_total =
-    ($("#xzh_budget_total").text() == "-"
-      ? 0
-      : parseFloat($("#xzh_budget_total").text())) + data.maxExpense;
+    ($("#xzh_budget_total").text() == "-" ?
+      0 :
+      parseFloat($("#xzh_budget_total").text())) + data.maxExpense;
   var expense_total =
-    ($("#xzh_expense_total").text() == "-"
-      ? 0
-      : parseFloat($("#xzh_expense_total").text())) + data.successExpense;
+    ($("#xzh_expense_total").text() == "-" ?
+      0 :
+      parseFloat($("#xzh_expense_total").text())) + data.successExpense;
 
   var pre =
-    ($("#xzh_pre_" + data.channel + "_" + data.index).text() == "-"
-      ? 0
-      : parseInt($("#xzh_pre_" + data.channel + "_" + data.index).text())) +
+    ($("#xzh_pre_" + data.channel + "_" + data.index).text() == "-" ?
+      0 :
+      parseInt($("#xzh_pre_" + data.channel + "_" + data.index).text())) +
     data.pinCount;
   var max =
-    ($("#xzh_max_" + data.channel + "_" + data.index).text() == "-"
-      ? 0
-      : parseInt($("#xzh_max_" + data.channel + "_" + data.index).text())) +
+    ($("#xzh_max_" + data.channel + "_" + data.index).text() == "-" ?
+      0 :
+      parseInt($("#xzh_max_" + data.channel + "_" + data.index).text())) +
     data.maxPinCount;
   var success_count =
-    ($("#xzh_" + data.channel + "_" + data.index).text() == "-"
-      ? 0
-      : parseInt($("#xzh_" + data.channel + "_" + data.index).text())) +
+    ($("#xzh_" + data.channel + "_" + data.index).text() == "-" ?
+      0 :
+      parseInt($("#xzh_" + data.channel + "_" + data.index).text())) +
     data.successPinCount;
   var budget =
-    ($("#xzh_budget_" + data.index).text() == "-"
-      ? 0
-      : parseFloat($("#xzh_budget_" + data.index).text())) + data.maxExpense;
+    ($("#xzh_budget_" + data.index).text() == "-" ?
+      0 :
+      parseFloat($("#xzh_budget_" + data.index).text())) + data.maxExpense;
   var expense =
-    ($("#xzh_expense_" + data.index).text() == "-"
-      ? 0
-      : parseFloat($("#xzh_expense_" + data.index).text())) +
+    ($("#xzh_expense_" + data.index).text() == "-" ?
+      0 :
+      parseFloat($("#xzh_expense_" + data.index).text())) +
     data.successExpense;
 
   $("#xzh_task_total").text(task_total);
@@ -3322,9 +3424,7 @@ function convertUrls(data) {
           var giftkey = "";
           if (!m) {
             m =
-              data["投放渠道"] == "短信"
-                ? ["#URL"]
-                : ["#HTTP_URL", undefined, undefined, "HTTP_"];
+              data["投放渠道"] == "短信" ? ["#URL"] : ["#HTTP_URL", undefined, undefined, "HTTP_"];
             data[i]["文案内容"] += m[0];
           }
           // 强行转链
@@ -3344,8 +3444,7 @@ function convertUrls(data) {
             giftkey = m[4];
           }
           // console.log(coupon)
-          makeUnionLink(
-            {
+          makeUnionLink({
               sku: data[i]["SKU"],
               sid: operator[pin],
               no: data[i]["任务名"] ? data[i]["任务名"].substr(-4) : "",
@@ -3412,9 +3511,9 @@ function convertUrl(data, i, url) {
   if (data["短链接"] == "是") {
     makeShortUrl(url, function (res) {
       url =
-        data["HTTP"] && res.data.indexOf("http") < 0
-          ? "https://" + res.data
-          : res.data;
+        data["HTTP"] && res.data.indexOf("http") < 0 ?
+        "https://" + res.data :
+        res.data;
       data["文案内容"] = data["文案内容"].replace(m[0], " " + url + " ");
 
       $("#xzh-link-shorturl-" + i).text(url);
@@ -3551,7 +3650,7 @@ function startSearchSkuPinCount() {
   tableElemet += skuData
     .map(
       (sku, i) =>
-        `<tr><td>${
+      `<tr><td>${
           i + 1
         }</td><td id="xzh-sku-data-${i}">${sku}</td><td id="xzh-sku-liulan-${i}">-</td><td id="xzh-sku-fukuan-${i}">-</td><td id="xzh-sku-jiagou-${i}">-</td></tr>`
     )
@@ -3567,8 +3666,7 @@ function startSearchSkuPinCount() {
       }
       // 查询浏览
       setTimeout(function () {
-        getPinCount(
-          {
+        getPinCount({
             浏览: {
               days: day,
               sku: skuData[i],
@@ -3584,8 +3682,7 @@ function startSearchSkuPinCount() {
       }, i * t);
       // 查询付款
       setTimeout(function () {
-        getPinCount(
-          {
+        getPinCount({
             付款: {
               days: day,
               sku: skuData[i],
@@ -3601,8 +3698,7 @@ function startSearchSkuPinCount() {
       }, (i + 1) * t * 1.5 + 1000);
       // 查询加购
       setTimeout(function () {
-        getPinCount(
-          {
+        getPinCount({
             加购: {
               days: day,
               sku: skuData[i],
@@ -3617,15 +3713,15 @@ function startSearchSkuPinCount() {
             let jiagouTotal = 0;
             if (i === skuData.length - 1) {
               skuData.forEach((sku, i) => {
-                liulanTotal += isNaN($(`#xzh-sku-liulan-${i}`).text())
-                  ? 0
-                  : Number($(`#xzh-sku-liulan-${i}`).text());
-                fukuanTotal += isNaN($(`#xzh-sku-fukuan-${i}`).text())
-                  ? 0
-                  : Number($(`#xzh-sku-fukuan-${i}`).text());
-                jiagouTotal += isNaN($(`#xzh-sku-jiagou-${i}`).text())
-                  ? 0
-                  : Number($(`#xzh-sku-jiagou-${i}`).text());
+                liulanTotal += isNaN($(`#xzh-sku-liulan-${i}`).text()) ?
+                  0 :
+                  Number($(`#xzh-sku-liulan-${i}`).text());
+                fukuanTotal += isNaN($(`#xzh-sku-fukuan-${i}`).text()) ?
+                  0 :
+                  Number($(`#xzh-sku-fukuan-${i}`).text());
+                jiagouTotal += isNaN($(`#xzh-sku-jiagou-${i}`).text()) ?
+                  0 :
+                  Number($(`#xzh-sku-jiagou-${i}`).text());
               });
               let totalRow = `<tr><td>总计</td><td id="xzh-sku-data">-</td><td id="xzh-sku-liulan-total">${liulanTotal}</td><td id="xzh-sku-fukuan-total">${fukuanTotal}</td><td id="xzh-sku-jiagou-total">${jiagouTotal}</td></tr>`;
               $("#sku-pin-count-table").append(totalRow);
@@ -3789,8 +3885,7 @@ function getOptions(data, func, withApp) {
             options.push({
               labelId: LABEL_OPTION_CONFIG[endKey][data[k]["days"]],
               labelOptionType: 5,
-              value:
-                '{"' +
+              value: '{"' +
                 data[k]["logic"] +
                 '":"' +
                 data[k]["counts"] +
@@ -3808,8 +3903,7 @@ function getOptions(data, func, withApp) {
           options.push({
             labelId: LABEL_OPTION_CONFIG[endKey][data[k]["days"]],
             labelOptionType: 5,
-            value:
-              '{"' +
+            value: '{"' +
               data[k]["logic"] +
               '":"' +
               data[k]["counts"] +
@@ -3822,7 +3916,7 @@ function getOptions(data, func, withApp) {
         $key_option = true;
         break;
 
-      // 处理店铺条件
+        // 处理店铺条件
       case "店铺浏览":
       case "店铺加购":
       case "店铺付款":
@@ -3919,8 +4013,12 @@ function getOptions(data, func, withApp) {
 
         let allCateArr = explode(data[k]["cate"]);
         console.log("品类标签--->allCateArr", allCateArr);
-        var cate = { cList: [] };
-        var valueCount = { gte: data[k].counts || 1 };
+        var cate = {
+          cList: []
+        };
+        var valueCount = {
+          gte: data[k].counts || 1
+        };
         console.log("品类标签--->", LABEL_OPTION_CONFIG[cateKey]);
         for (var i = 0; i < allCateArr.length; i++) {
           let cateObj = {
@@ -3944,7 +4042,10 @@ function getOptions(data, func, withApp) {
             options.push(cateObj);
           } else {
             cate.cList[0] = getCategory(allCateArr[i]);
-            cateObj.value = JSON.stringify({ ...cate, ...valueCount });
+            cateObj.value = JSON.stringify({
+              ...cate,
+              ...valueCount
+            });
             options.push(cateObj);
           }
         }
@@ -3968,9 +4069,9 @@ function getOptions(data, func, withApp) {
           searchLabelKey = searchLabelKey.substring(0, 2);
         }
         let curLabelId =
-          searchLabelKey === "搜索"
-            ? LABEL_OPTION_CONFIG[searchLabelKey][data[k]["days"]]
-            : REAL_TIME_LABEL_CONFIG[searchLabelKey].labelId;
+          searchLabelKey === "搜索" ?
+          LABEL_OPTION_CONFIG[searchLabelKey][data[k]["days"]] :
+          REAL_TIME_LABEL_CONFIG[searchLabelKey].labelId;
 
         // 支持圈选天数大于三十天的的时候，关键词搜索默认最大值三十天
         if (Number(data[k]["days"]) > 30) {
@@ -3978,9 +4079,9 @@ function getOptions(data, func, withApp) {
         }
 
         let words =
-          searchLabelKey === "搜索"
-            ? data[k]["keywords"]
-            : data[k][2].split(",");
+          searchLabelKey === "搜索" ?
+          data[k]["keywords"] :
+          data[k][2].split(",");
         console.log("搜索标签--->words", words);
         let allKeywordsArr = explode(words);
         console.log("搜索标签--->allKeywordsArr", allKeywordsArr);
@@ -4016,7 +4117,9 @@ function getOptions(data, func, withApp) {
               count = i.split(">")[1];
             }
           }
-          let countObj = { gte: count };
+          let countObj = {
+            gte: count
+          };
           let keywordObj = {
             labelId: curLabelId,
             labelOptionType: 7,
@@ -4191,7 +4294,11 @@ function getOptions(data, func, withApp) {
             let value = {
               filterBy: "days",
               value: Number(touchedLabelValue[0]),
-              status: { dd: 1, sms: 1, call: 1 },
+              status: {
+                dd: 1,
+                sms: 1,
+                call: 1
+              },
             };
             touchedOption.value = JSON.stringify(value);
           }
@@ -4200,7 +4307,11 @@ function getOptions(data, func, withApp) {
             let value = {
               filterBy: "tasks",
               value: touchedLabelValue.join(","),
-              status: { dd: 1, sms: 1, call: 1 },
+              status: {
+                dd: 1,
+                sms: 1,
+                call: 1
+              },
             };
             touchedOption.value = JSON.stringify(value);
           }
@@ -4346,7 +4457,9 @@ function getOptions(data, func, withApp) {
 
           let allCateArr = explode(catData[0]);
           console.log("实时标签-->品类标签--->allCateArr", allCateArr);
-          var cate = { cList: [] };
+          var cate = {
+            cList: []
+          };
           for (var i = 0; i < allCateArr.length; i++) {
             let cateObj = tempOption;
             if (
@@ -4360,7 +4473,9 @@ function getOptions(data, func, withApp) {
               cateObj.value = JSON.stringify({
                 ...cate,
                 ...valueObj,
-                ...{ gte: counts },
+                ...{
+                  gte: counts
+                },
               });
               options.push(cateObj);
             } else {
@@ -4368,7 +4483,9 @@ function getOptions(data, func, withApp) {
               cateObj.value = JSON.stringify({
                 ...cate,
                 ...valueObj,
-                ...{ gte: counts },
+                ...{
+                  gte: counts
+                },
               });
               options.push(cateObj);
             }
@@ -4399,18 +4516,17 @@ function getOptions(data, func, withApp) {
             for (var p in LABEL_OPTION_CONFIG[k]) keys.push(p);
             alert(
               "画像填写不规范【" +
-                k +
-                "：" +
-                a[i] +
-                "】\n参考值：" +
-                keys.join("、")
+              k +
+              "：" +
+              a[i] +
+              "】\n参考值：" +
+              keys.join("、")
             );
           }
           tempValueObj = {
             ...tempValueObj,
             ...{
-              [LABEL_OPTION_CONFIG[k][a[i]]["id"]]:
-                LABEL_OPTION_CONFIG[k][a[i]]["value"],
+              [LABEL_OPTION_CONFIG[k][a[i]]["id"]]: LABEL_OPTION_CONFIG[k][a[i]]["value"],
             },
           };
         }
@@ -4450,7 +4566,7 @@ function getOptions(data, func, withApp) {
   } else {
     const excludeTouchedChannels = []; // 排除平台已触达渠道
     console.log("人群包--->123456", data, data["data"]);
-    if (data["data"]&&data["data"]["排除平台已触达渠道"]) {
+    if (data["data"] && data["data"]["排除平台已触达渠道"]) {
       if (data["data"]["排除平台已触达渠道"].includes("咚咚")) {
         excludeTouchedChannels.push("dd");
       }
@@ -4461,19 +4577,20 @@ function getOptions(data, func, withApp) {
     console.log("人群包--->123456excludeTouchedChannels", excludeTouchedChannels);
     crowdOptions = {
       // name: (data["data"] && data["data"]["人群包名称"]) || "",
-      name: isUat
-        ? `测试-${moment().format("HH:mm:ss")}`
-        : (data["data"] && data["data"]["人群包名称"]) ||
-          (data["data"] && data["data"]["任务名"]) ||
-          `预估人数-${moment().format("HH:mm:ss")}`,
-      labelOptions: [
-        {
+      name: isUat ?
+        `测试-${moment().format("HH:mm:ss")}` : (data["data"] && data["data"]["人群包名称"]) ||
+        (data["data"] && data["data"]["任务名"]) ||
+        `预估人数-${moment().format("HH:mm:ss")}`,
+      labelOptions: [{
           operator: "DEFAULT",
           label: {
             labels: options
               .filter((i) => i.operate === "INTSCT")
               .map((i) => {
-                const { operate, ...other } = i;
+                const {
+                  operate,
+                  ...other
+                } = i;
                 return other;
               }),
             type: "INTSCT",
@@ -4485,7 +4602,10 @@ function getOptions(data, func, withApp) {
             labels: options
               .filter((i) => i.operate === "DIFF")
               .map((i) => {
-                const { operate, ...other } = i;
+                const {
+                  operate,
+                  ...other
+                } = i;
                 return other;
               }),
             type: "UNION",
@@ -4598,7 +4718,11 @@ function getSkuInfo(sku, index, func) {
 // 获取sku信息后，渲染页面
 function getSkuInfoToRender(data) {
   console.log("getSkuInfoToRender--->data", data);
-  const { index: i, res, sku } = data;
+  const {
+    index: i,
+    res,
+    sku
+  } = data;
   if (!res.result || !res.result.length) {
     alert(`未查到sku：${sku}的数据！`);
     return;
@@ -4607,15 +4731,15 @@ function getSkuInfoToRender(data) {
   $("#xzh_data_price_" + i).text(res.result[0].goods_price);
   $("#xzh_data_comm_" + i).html(
     "<p>" +
-      res.result[0].commisionRatioWl +
-      '%</p><p id="xzh_data_commtotal_' +
-      i +
-      '" class="xzh-label-gray">' +
-      (
-        (res.result[0].goods_price * res.result[0].commisionRatioWl) /
-        100
-      ).toFixed(2) +
-      "</p>"
+    res.result[0].commisionRatioWl +
+    '%</p><p id="xzh_data_commtotal_' +
+    i +
+    '" class="xzh-label-gray">' +
+    (
+      (res.result[0].goods_price * res.result[0].commisionRatioWl) /
+      100
+    ).toFixed(2) +
+    "</p>"
   );
   $("#xzh_data_sku_" + i).append(
     "<p>" + res.result[0].goods_name.substr(0, 30) + "</p>"
@@ -4735,9 +4859,14 @@ function getPinCount(options, func, withApp = true) {
   if (id || labelOptions.length > 0) {
     let params = null;
     if (id) {
-      params = { id };
+      params = {
+        id
+      };
     } else {
-      params = { crowdScopeType: 1, labelOptions };
+      params = {
+        crowdScopeType: 1,
+        labelOptions
+      };
     }
 
     $.ajax({
@@ -4750,9 +4879,15 @@ function getPinCount(options, func, withApp = true) {
       success: function (res) {
         console.log("预估的res--->", res);
         if (res.data) {
-          const { finished, requestId } = res.data;
+          const {
+            finished,
+            requestId
+          } = res.data;
           if (finished) {
-            func({ data: res.data.count, id });
+            func({
+              data: res.data.count,
+              id
+            });
           } else {
             getRefreshPinCount(requestId, func, id);
           }
@@ -4772,9 +4907,16 @@ function getRefreshPinCount(requestId, func, id) {
     contentType: "application/json",
     success: function (res) {
       if (res.data) {
-        const { count, finished, requestId } = res.data;
+        const {
+          count,
+          finished,
+          requestId
+        } = res.data;
         if (finished) {
-          func({ data: count, id });
+          func({
+            data: count,
+            id
+          });
         } else {
           setTimeout(() => {
             getRefreshPinCount(requestId, func, id);
@@ -4788,9 +4930,9 @@ function getRefreshPinCount(requestId, func, id) {
 }
 
 function getAllCategory(cate, ffid = 0) {
-  let category = cate
-    ? cate
-    : $.parseJSON(localStorage.getItem("xzh_category"));
+  let category = cate ?
+    cate :
+    $.parseJSON(localStorage.getItem("xzh_category"));
   if (!category) {
     $.ajax({
       url: "/mkt/api/category/all",
@@ -4806,8 +4948,7 @@ function getAllCategory(cate, ffid = 0) {
   if (category) {
     for (k in category) {
       data.push({
-        cId:
-          ffid +
+        cId: ffid +
           "_" +
           category[k].fatherCategoryId +
           "_" +
@@ -4948,7 +5089,10 @@ function addTask(data, options, i, length, func) {
   if (data["投放渠道"] && data["文案"]) {
     const template_id = isHasTemplate(data["文案"]);
     if (!template_id) {
-      return { ok: false, msg: `${data["投放渠道"]}模板错误` };
+      return {
+        ok: false,
+        msg: `${data["投放渠道"]}模板错误`
+      };
     } else if (template_id && template_id.channel) {
       if (
         TEMPLATE_TEXT[data["投放渠道"]] &&
@@ -4969,10 +5113,16 @@ function addTask(data, options, i, length, func) {
     userDataSource = USER_DATA_SOURCE_PIN_ENTER;
   }
   if (!data.hasOwnProperty("投放日期") || !data["投放日期"]) {
-    return { ok: false, msg: "无投放日期" };
+    return {
+      ok: false,
+      msg: "无投放日期"
+    };
   }
   if (!data.hasOwnProperty("任务名") || !data["任务名"]) {
-    return { ok: false, msg: "任务名称为空" };
+    return {
+      ok: false,
+      msg: "任务名称为空"
+    };
   }
 
   let templateDate = $("#xzh-template-date").val();
@@ -4989,8 +5139,7 @@ function addTask(data, options, i, length, func) {
     //     data["投放渠道"].substr(1, 1),
     name: isUat ? `测试-${moment().format("HH:mm:ss")}` : data["任务名"],
     // name: data["任务名"],
-    execRule:
-      data["投放日期"].getMinutes() +
+    execRule: data["投放日期"].getMinutes() +
       " " +
       data["投放日期"].getHours() +
       " " +
@@ -5018,9 +5167,9 @@ function addTask(data, options, i, length, func) {
     for (let key in options) {
       let newKey = key.substring(0, 2);
       if (options[key]["sku"]) {
-        let spacerLength = options[key]["spacer"]
-          ? options[key]["spacer"].length
-          : 0;
+        let spacerLength = options[key]["spacer"] ?
+          options[key]["spacer"].length :
+          0;
         if (!optionsKeyValues[newKey]) {
           optionsKeyValues[options[key]["days"] + "日" + newKey] =
             options[key]["sku"].length + spacerLength;
@@ -5037,7 +5186,10 @@ function addTask(data, options, i, length, func) {
     for (let key in optionsKeyValues) {
       totalSku += optionsKeyValues[key];
       if (optionsKeyValues[key] > MAX_SKU_LENGTH) {
-        return { ok: false, msg: `${key}维度标签sku个数大于${MAX_SKU_LENGTH}` };
+        return {
+          ok: false,
+          msg: `${key}维度标签sku个数大于${MAX_SKU_LENGTH}`
+        };
       }
       if (optionsKeyValues[key] < MIN_SKU_AND_SHOP_LENGTH) {
         return {
@@ -5064,8 +5216,7 @@ function addTask(data, options, i, length, func) {
       ) {
         console.log("人群包--->111");
         currentCrowdId = addCrowdFunc(
-          getOptions(
-            {
+          getOptions({
               ...options,
               data: data,
             },
@@ -5087,11 +5238,17 @@ function addTask(data, options, i, length, func) {
     task["userDataDetail"] = currentCrowdId;
 
     if (isNaN(currentCrowdId) && currentCrowdId.includes("创建失败")) {
-      return { ok: false, msg: `${currentCrowdId.split("&&")[0]}` };
+      return {
+        ok: false,
+        msg: `${currentCrowdId.split("&&")[0]}`
+      };
     }
 
     if (!currentCrowdId) {
-      return { ok: false, msg: `圈选条件出错！` };
+      return {
+        ok: false,
+        msg: `圈选条件出错！`
+      };
     }
   }
 
@@ -5158,21 +5315,36 @@ function addTask(data, options, i, length, func) {
   }
 
   if (!finalTemplateId) {
-    return { ok: false, msg: "无渠道模板" };
+    return {
+      ok: false,
+      msg: "无渠道模板"
+    };
   }
 
   // 短信
   if (data["投放渠道"] == "短信") {
-    task["channel"]["sequence"] = { 1: "dd:0", 2: "sms:1" };
+    task["channel"]["sequence"] = {
+      1: "dd:0",
+      2: "sms:1"
+    };
     task["channel"]["sms_template_id"] = finalTemplateId;
     if (task["channel"]["sms_template_id"].length == 0) {
-      return { ok: false, msg: "无短信模板" };
+      return {
+        ok: false,
+        msg: "无短信模板"
+      };
     }
   } else {
-    task["channel"]["sequence"] = { 1: "dd:1", 2: "sms:0" };
+    task["channel"]["sequence"] = {
+      1: "dd:1",
+      2: "sms:0"
+    };
     task["channel"]["dd_template_id"] = finalTemplateId;
     if (task["channel"]["dd_template_id"].length == 0) {
-      return { ok: false, msg: "无咚咚模板" };
+      return {
+        ok: false,
+        msg: "无咚咚模板"
+      };
     }
   }
 
@@ -5202,7 +5374,10 @@ function addTask(data, options, i, length, func) {
     },
   });
 
-  return { ok: true, msg: "成功" };
+  return {
+    ok: true,
+    msg: "成功"
+  };
 }
 
 function getTemplateIdWithName(name, channel, channelDesc) {
@@ -5220,7 +5395,7 @@ function getTemplateIdWithName(name, channel, channelDesc) {
           let targetExtension = channelDesc.includes("富");
           let targetTemplate = templateList.find(
             (item) =>
-              item.name.trim() === name && targetExtension === !!item.extension
+            item.name.trim() === name && targetExtension === !!item.extension
           );
           if (targetTemplate) {
             id = targetTemplate.id;
@@ -5239,13 +5414,16 @@ const linkUrlElement = (url) =>
 // 创建短信
 function addSms(data, func) {
   console.log("sms--->", data);
-  let channel = data["模板类型"].includes("短信")
-    ? "sms"
-    : data["模板类型"].includes("咚咚")
-    ? "dd"
-    : "";
+  let channel = data["模板类型"].includes("短信") ?
+    "sms" :
+    data["模板类型"].includes("咚咚") ?
+    "dd" :
+    "";
   if (!channel) {
-    return { ok: false, msg: "模板类型有误" };
+    return {
+      ok: false,
+      msg: "模板类型有误"
+    };
   }
   let content = data["文案内容"];
   if (channel === "dd") {
@@ -5333,11 +5511,17 @@ function addSms(data, func) {
     // 短信签名
     var sms_signature = $("#sms_signature").val();
     if (sms_signature.length == 0) {
-      return { ok: false, msg: "签名有误" };
+      return {
+        ok: false,
+        msg: "签名有误"
+      };
     }
     // 超过70个字
     if (params.content.length + sms_signature.length + 7 > 70) {
-      return { ok: false, msg: "超过70个字" };
+      return {
+        ok: false,
+        msg: "超过70个字"
+      };
     }
   }
   // return
@@ -5356,7 +5540,10 @@ function addSms(data, func) {
     },
   });
 
-  return { ok: true, msg: "成功" };
+  return {
+    ok: true,
+    msg: "成功"
+  };
 }
 
 function getTempleteId(name, func) {
@@ -5373,9 +5560,13 @@ function getTempleteId(name, func) {
         if (templateList.length > 0) {
           const curTemplate = templateList[0];
           if (curTemplate) {
-            func({ data: curTemplate.id });
+            func({
+              data: curTemplate.id
+            });
           } else {
-            func({ data: "未生成此模板！" });
+            func({
+              data: "未生成此模板！"
+            });
           }
         }
       }
@@ -5460,8 +5651,7 @@ function splitArray(
 function getTaskDataByPage(page = 1, keyword = "") {
   return new Promise((resolve, reject) => {
     $.ajax({
-      url:
-        `/mkt/api/mt/task/list?page=1&keyword=${keyword}&type=1&pageSize=` +
+      url: `/mkt/api/mt/task/list?page=1&keyword=${keyword}&type=1&pageSize=` +
         10 * page,
       type: "GET",
       dataType: "json",
@@ -5529,12 +5719,12 @@ function renderTaskTable(startCount, data, tableHtml) {
     } else {
       sHtml +=
         `<td rowspan="1">` +
-        (is_groupby
-          ? data[i].name.substr(0, 3) +
-            `<br /><span class="xzh-label-dd">` +
-            (data[i].pinCount == -3 ? "计算中" : data[i].pinCount) +
-            `</span>`
-          : i + 1) +
+        (is_groupby ?
+          data[i].name.substr(0, 3) +
+          `<br /><span class="xzh-label-dd">` +
+          (data[i].pinCount == -3 ? "计算中" : data[i].pinCount) +
+          `</span>` :
+          i + 1) +
         `</td>`;
       rowspan = 1;
     }
@@ -5601,12 +5791,12 @@ function renderTaskTable(startCount, data, tableHtml) {
         td.children("span").remove();
         next_tr.prepend(
           '<td rowspan="' +
-            (td.attr("rowspan") - 1) +
-            '">' +
-            td.text() +
-            '<br /><span class="xzh-label-dd">' +
-            (total_pincount - pincount) +
-            "</span></td>"
+          (td.attr("rowspan") - 1) +
+          '">' +
+          td.text() +
+          '<br /><span class="xzh-label-dd">' +
+          (total_pincount - pincount) +
+          "</span></td>"
         );
       }
     } else {
