@@ -1310,35 +1310,38 @@ function getMaxMarketingCost() {
   let priceDetail = getPriceDetail();
   console.log('getMaxMarketingCost--->budget', trafficBudget)
   console.log('getMaxMarketingCost--->priceDetail', priceDetail)
+  let dailyMarketingCostsElement;
   if (!trafficBudget) {
-    const dailyMarketingCostsElementError1 = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因发送上限无法获取，故无法计算成本</div>`);
-    $(".search-box___SIbW").append(dailyMarketingCostsElementError1)
-    return
+    dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因发送上限无法获取，故无法计算成本</div>`);
+  } else if (!priceDetail) {
+    dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因单价无法获取，故无法计算成本</div>`);
+  } else {
+    let {
+      ddMax,
+      richDdMax,
+      smsMax,
+      richSmsMax
+    } = trafficBudget
+    let {
+      ddPriceBig,
+      richDdPriceBig,
+      smsPriceBig,
+      richSmsPriceBig
+    } = priceDetail;
+    const dailyMarketingCosts = ddPriceBig * (ddMax > 1000 ? ddMax : 0) +
+      richDdPriceBig * (richDdMax > 1000 ? richDdMax : 0) +
+      smsPriceBig * (smsMax > 1000 ? smsMax : 0) +
+      richSmsPriceBig * (richSmsMax > 1000 ? richSmsMax : 0)
+    // const dailyMarketingCosts = 0
+    console.log('dailyMarketingCosts--->', dailyMarketingCosts)
+    dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：${Math.floor(dailyMarketingCosts)}元</div>`);
   }
-  if (!priceDetail) {
-    const dailyMarketingCostsElementError2 = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因单价无法获取，故无法计算成本</div>`);
-    $(".search-box___SIbW").append(dailyMarketingCostsElementError2)
-    return
+  const sendMaxBtn = $(".new-flag-wrapper__oefVL")
+  if (sendMaxBtn) {
+    dailyMarketingCostsElement.insertBefore(sendMaxBtn);
+  } else {
+    $(".search-box___SIbW").append(dailyMarketingCostsElement)
   }
-  let {
-    ddMax,
-    richDdMax,
-    smsMax,
-    richSmsMax
-  } = trafficBudget
-  let {
-    ddPriceBig,
-    richDdPriceBig,
-    smsPriceBig,
-    richSmsPriceBig
-  } = priceDetail;
-  const dailyMarketingCosts = ddPriceBig * (ddMax > 1000 ? ddMax : 0) +
-    richDdPriceBig * (richDdMax > 1000 ? richDdMax : 0) +
-    smsPriceBig * (smsMax > 1000 ? smsMax : 0) +
-    richSmsPriceBig * (richSmsMax > 1000 ? richSmsMax : 0)
-  console.log('dailyMarketingCosts--->', dailyMarketingCosts)
-  const dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：${Math.floor(dailyMarketingCosts)}元</div>`);
-  $(".search-box___SIbW").append(dailyMarketingCostsElement)
 }
 getMaxMarketingCost()
 
