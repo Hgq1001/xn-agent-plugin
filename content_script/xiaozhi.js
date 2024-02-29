@@ -1308,13 +1308,11 @@ function getPriceDetail() {
 function getMaxMarketingCost() {
   let trafficBudget = getBudget();
   let priceDetail = getPriceDetail();
-  console.log('getMaxMarketingCost--->budget', trafficBudget)
-  console.log('getMaxMarketingCost--->priceDetail', priceDetail)
   let dailyMarketingCostsElement;
   if (!trafficBudget) {
-    dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因发送上限无法获取，故无法计算成本</div>`);
+    dailyMarketingCostsElement = `<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因发送上限无法获取，故无法计算成本</div>`;
   } else if (!priceDetail) {
-    dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因单价无法获取，故无法计算成本</div>`);
+    dailyMarketingCostsElement = `<div style="min-width:250px;color:red;font-size:22px">当日营销成本：因单价无法获取，故无法计算成本</div>`;
   } else {
     let {
       ddMax,
@@ -1332,13 +1330,11 @@ function getMaxMarketingCost() {
       richDdPriceBig * (richDdMax > 1000 ? richDdMax : 0) +
       smsPriceBig * (smsMax > 1000 ? smsMax : 0) +
       richSmsPriceBig * (richSmsMax > 1000 ? richSmsMax : 0)
-    // const dailyMarketingCosts = 0
-    console.log('dailyMarketingCosts--->', dailyMarketingCosts)
-    dailyMarketingCostsElement = $(`<div style="min-width:250px;color:red;font-size:22px">当日营销成本：${Math.floor(dailyMarketingCosts)}元</div>`);
+    dailyMarketingCostsElement = `<div style="min-width:250px;color:red;font-size:22px">当日营销成本：${Math.floor(dailyMarketingCosts)}元</div>`;
   }
   const sendMaxBtn = $(".new-flag-wrapper__oefVL")
-  if (sendMaxBtn) {
-    dailyMarketingCostsElement.insertBefore(sendMaxBtn);
+  if (sendMaxBtn.length > 0) {
+    $(dailyMarketingCostsElement).insertBefore(sendMaxBtn);
   } else {
     $(".search-box___SIbW").append(dailyMarketingCostsElement)
   }
@@ -4680,7 +4676,7 @@ function addCrowdFunc(options, number) {
       console.log("人群包--->存在--->isExistCrowd--->删除它");
       deleteCrowd(curCrowdId);
     }
-    // return;
+    return;
     $.ajax({
       url: "/mkt/api/crowd/add", // 人群包2.0版---新增人群包
       type: "POST",
@@ -5009,7 +5005,6 @@ function getCategory(name, category, fid = 0) {
   //   alert("【" + name + "】匹配到" + i + "个品类，请增加二级品类");
   //   return false;
   // }
-  // console.log('CATE', data);
   return data;
 }
 
