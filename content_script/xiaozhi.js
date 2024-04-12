@@ -1437,6 +1437,7 @@ $("body").bind("DOMNodeInserted", function () {
 
       getUserInfo();
       getAiList();
+      getAllCategory()
 
 
       var category = getAllCategory();
@@ -4032,7 +4033,7 @@ function getOptions(data, func, withApp) {
           ) {
             // 如果有&符号的代表为一个混合标签，其他都是单个标签
             allCateArr[i].split("&").forEach((item, index) => {
-              cate.cList[index] = getCategory(item);
+              cate.cList[index] = getCatsDataFromCatNames(item);
             });
             cateObj.value = JSON.stringify({
               ...cate,
@@ -4040,7 +4041,7 @@ function getOptions(data, func, withApp) {
             });
             options.push(cateObj);
           } else {
-            cate.cList[0] = getCategory(allCateArr[i]);
+            cate.cList[0] = getCatsDataFromCatNames(allCateArr[i]);
             cateObj.value = JSON.stringify({
               ...cate,
               ...valueCount
@@ -4467,7 +4468,7 @@ function getOptions(data, func, withApp) {
             ) {
               // 如果有&符号的代表为一个混合标签，其他都是单个标签
               allCateArr[i].split("&").forEach((item, index) => {
-                cate.cList[index] = getCategory(item);
+                cate.cList[index] = getCatsDataFromCatNames(item);
               });
               cateObj.value = JSON.stringify({
                 ...cate,
@@ -4478,7 +4479,7 @@ function getOptions(data, func, withApp) {
               });
               options.push(cateObj);
             } else {
-              cate.cList[0] = getCategory(allCateArr[i]);
+              cate.cList[0] = getCatsDataFromCatNames(allCateArr[i]);
               cateObj.value = JSON.stringify({
                 ...cate,
                 ...valueObj,
@@ -4676,7 +4677,6 @@ function addCrowdFunc(options, number) {
       console.log("人群包--->存在--->isExistCrowd--->删除它");
       deleteCrowd(curCrowdId);
     }
-    return;
     $.ajax({
       url: "/mkt/api/crowd/add", // 人群包2.0版---新增人群包
       type: "POST",
@@ -4928,11 +4928,9 @@ function getRefreshPinCount(requestId, func, id) {
   });
 }
 
-function getAllCategory(cate, ffid = 0) {
-  let category = cate ?
-    cate :
-    $.parseJSON(localStorage.getItem("xzh_category"));
-  if (!category) {
+function getAllCategory() {
+  let categoryTreeData = $.parseJSON(localStorage.getItem("xzh_category"));
+  if (!categoryTreeData) {
     $.ajax({
       url: "/mkt/api/category/all",
       type: "GET",
@@ -4943,70 +4941,82 @@ function getAllCategory(cate, ffid = 0) {
       },
     });
   }
-  var data = [];
-  if (category) {
-    for (k in category) {
-      data.push({
-        cId: ffid +
-          "_" +
-          category[k].fatherCategoryId +
-          "_" +
-          category[k].categoryId,
-        cNm: category[k].categoryName,
-        fId: category[k].fatherCategoryId,
-        currentId: category[k].categoryId,
-      });
-      if (
-        category[k].hasOwnProperty("children") &&
-        category[k].children != null
-      ) {
-        data.push.apply(
-          data,
-          getAllCategory(category[k].children, category[k].fatherCategoryId)
-        );
-      }
-    }
-  }
-  return data;
 }
 
-function getCategory(name, category, fid = 0) {
-  if (!category) {
-    category = getAllCategory();
-  }
-  if (!category) {
-    return false;
-  }
-  var data = [];
-  var f = name.indexOf("|");
-  if (f > 0) {
-    var names = name.split("|");
-    for (var i = 0; i < names.length; i++) {
-      data = getCategory(names[i], category, fid);
-      if (i < names.length - 1) {
-        fid = data.currentId;
-      } else {
-        return data;
-      }
+function getCateData(name, categoryTreeData) {
+  let cateData = {}
+  categoryTreeData.forEach((cat1) => {
+    if (cat1.categoryName === name) {
+      cateData = {
+        ...cat1,
+        levelOneCategoryId: cat1.categoryId
+      };
+    } else {
+      (cat1.children || []).forEach((cat2) => {
+        // 二级品类
+        if (cat2.categoryName === name) {
+          cateData = {
+            ...cat2,
+            levelOneCategoryId: cat1.categoryId
+          };
+        } else {
+          // 三级品类
+          (cat2.children || []).forEach((cat3) => {
+            if (cat3.categoryName === name) {
+              cateData = {
+                ...cat3,
+                levelOneCategoryId: cat1.categoryId,
+                levelTwoCategoryId: cat2.categoryId
+              };
+            } else {
+              // 四级品类
+              (cat3.children || []).forEach((cat4) => {
+                if (cat4.categoryName === name) {
+                  cateData = {
+                    ...cat4,
+                    levelOneCategoryId: cat1.categoryId,
+                    levelTwoCategoryId: cat2.categoryId,
+                    levelThreeCategoryId: cat3.categoryId
+                  };
+                }
+              });
+            }
+          });
+        }
+      });
     }
-  }
-  var i = 0;
-  for (k in category) {
-    if (category[k].cNm == name && (category[k].fId == fid || fid == 0)) {
-      data = category[k];
-      i++;
-    }
-  }
-  if (i == 0) {
-    alert("【" + name + "】没有匹配到品类，请检查");
-    return false;
-  }
-  // if (i > 1) {
-  //   alert("【" + name + "】匹配到" + i + "个品类，请增加二级品类");
-  //   return false;
-  // }
-  return data;
+  });
+  return cateData
 }
+
+// 根据品类id 获取相关数据
+function getCatsDataFromCatNames(name) {
+  console.log('getCatsDataFromCatNames--->names', name)
+  let categoryTreeData = $.parseJSON(localStorage.getItem("xzh_category"))
+  let id = '';
+  const cateNames = name.split('|');
+  console.log('getCatsDataFromCatNames--->cateNames', cateNames)
+  let data
+  for (let i = 0; i < cateNames.length; i++) {
+    let cateTreeData = data?.children || categoryTreeData
+    data = getCateData(cateNames[i], cateTreeData);
+  }
+  console.log('getCatsDataFromCatNames--->data', data)
+  if (data.categoryId) {
+    if (data?.categoryClass === 2) {
+      id = `${data.levelOneCategoryId}_${data.levelTwoCategoryId}_${data.categoryId}`
+    }
+    if (data?.categoryClass === 3) {
+      id = `${data.levelOneCategoryId}_${data.levelTwoCategoryId}_${data.levelThreeCategoryId}_${data.categoryId}`
+    }
+    return {
+      cId: id
+    }
+  }
+  alert("【" + name + "】没有匹配到品类，请检查");
+  return false;
+};
+
 
 function table(s, is_col = true) {
   if (!s) {
