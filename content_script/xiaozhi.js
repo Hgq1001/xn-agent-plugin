@@ -27,7 +27,7 @@ var MAX_PERIOD = 4; // 任务效果分析数据-最大period
 
 var MAX_TOUCHED_DAYS_SEND = 30; // 排除已触达用户最大天数
 var MAX_TOUCHED_TASK_ID_LENGTH = 10; // 排除已触达用户最大任务数
-var MIN_SKU_AND_SHOP_LENGTH = 5; // 商品标签最小sku个数/店铺标签最小shopId个数
+var MIN_SKU_AND_SHOP_LENGTH = 3; // 商品标签最小sku个数/店铺标签最小shopId个数
 var MAX_SKU_LENGTH = 99; // 商品标签最大sku个数
 var MAX_SHOP_ID_LENGTH = 20; // 单个店铺标签最大shopId个数
 var MAX_SKU_LENGTH_FOR_ONCE_TASK = 1000; // 每次任务SKU最大数量
@@ -871,7 +871,9 @@ $("body").append(`
 
 if ($(".search-box___SIbW").length > 0 && $("#xzh-btn-edit-task").length == 0) {
   $(".search-box___SIbW").append(
-    `<button id="xzh-btn-delete-task" type="button" class="ant-btn css-r3n9ey ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>批量删除任务</span></button>`
+    `<button id="xzh-btn-delete-task" type="button" class="ant-btn css-1qspf5c ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>批量删除任务</span></button>
+    <button id="xzh-btn-discontinue-task" onclick="discontinueTask();" type="button" class="ant-btn css-1qspf5c ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>一键中止</span></button>
+    `
   );
 }
 
@@ -1137,6 +1139,51 @@ function batchDeleteTask() {
   }
   getTaskList(Number(startPage), Number(endPage), []);
   $("#batch-delete-task").css("display", "none");
+}
+
+// 一键中止执行中的任务
+function discontinueTask() {
+  let successCount = 0
+  let failureCount = 0
+  $.ajax({
+    url: `/mt/task/list?page=1&pageSize=500&status=3&keyword=&type=1`,
+    type: "GET",
+    dataType: "json",
+    contentType: "application/json",
+    success: function (res) {
+      if (res.data) {
+        const {
+          result,
+        } = res.data;
+        console.log("discontinueTask--->", result)
+        const taskIds = result.map(task => task.id)
+        taskIds.forEach((id, index) => {
+          (function (index) {
+            setTimeout(() => {
+              $.ajax({
+                url: `/mkt/api/mt/task/stop/${id}`,
+                type: "put",
+                dataType: "json",
+                // async: false,
+                contentType: "application/json",
+                success: function (res) {
+                  if (res.data) {
+                    successCount += 1
+                  } else {
+                    failureCount += 1
+                  }
+                  if (index === taskIds.length - 1) {
+                    alert(`操作完毕，${successCount} 个中止成功，${failureCount}个中止失败`);
+                  }
+                },
+              });
+            }, index * 200);
+          })(index);
+        });
+      }
+    },
+  });
+
 }
 
 function getTaskList(startPage = 1, endPage, list = []) {
