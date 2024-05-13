@@ -1146,7 +1146,7 @@ function discontinueTask() {
   let successCount = 0
   let failureCount = 0
   $.ajax({
-    url: `/mt/task/list?page=1&pageSize=500&status=3&keyword=&type=1`,
+    url: `/mkt/api/mt/task/list?page=1&pageSize=500&status=3&keyword=&type=1`,
     type: "GET",
     dataType: "json",
     contentType: "application/json",
