@@ -1,6 +1,7 @@
 var pin = $.cookie("pin");
 var user = $.cookie("xn_user");
 var xn_token = $.cookie("xn_token");
+var is_create_crowd = false;
 var operator = {
   dengzhongzhuan: "XT",
 };
@@ -1465,7 +1466,9 @@ $("body").bind("DOMNodeInserted", function () {
         "</div>" +
         "</div>" +
         "</div>" +
-        '<div class="ant-modal-footer"><input id="sms_template_id" type="hidden" /><button id="xzh-btn-multi-check" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z"><span>批量查询</span></button><button id="xzh-btn-multi-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创建</span></button></div>' +
+        '<div class="ant-modal-footer"><input id="sms_template_id" type="hidden" /><button id="xzh-btn-multi-check" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z"><span>批量查询</span></button>' +
+        '<button id="xzh-btn-multi-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创建任务</span></button>' +
+        '<button id="xzh-btn-crowd-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创人群包</span></button></div>' +
         "</div></div>";
       $("div[role='dialog']").append(sHtml);
 
@@ -1500,7 +1503,7 @@ $("body").bind("DOMNodeInserted", function () {
       );
 
       // 批量查询、投放
-      $("#xzh-btn-multi-check,#xzh-btn-multi-submit").bind(
+      $("#xzh-btn-multi-check,#xzh-btn-multi-submit, #xzh-btn-crowd-submit").bind(
         "click",
         function () {
           var is_check = true;
@@ -1509,32 +1512,42 @@ $("body").bind("DOMNodeInserted", function () {
           }
           // console.log(is_check);
 
-          // 处理发送上限
-          const sendMaxData = table($("#send-max").val())[0];
-          console.log("sendMaxData---->", sendMaxData, typeof sendMaxData);
+          if ($(this)[0].id == "xzh-btn-crowd-submit") {
+            is_create_crowd = true;
+          }
+          if ($(this)[0].id !== "xzh-btn-crowd-submit") {
+            is_create_crowd = false;
+          }
 
-          if (!sendMaxData) {
-            alert("请设置发送上限！");
-            return;
-          } else {
-            sendMaxConfig = {
-              ...sendMaxConfig,
-              咚咚: Number(sendMaxData["咚咚"]),
-              富媒体咚咚: Number(sendMaxData["富媒体咚咚"]),
-              短信: Number(sendMaxData["短信"]),
-              富媒体短信: Number(sendMaxData["富媒体短信"]),
-              // 营销成本: Number(sendMaxData["营销成本"])
-            };
-            console.log("sendMaxConfig--->", sendMaxConfig);
-            if (Object.values(sendMaxConfig).every((value) => !value)) {
-              alert("发送上限不能全为空");
-              return;
-            }
-            // if (!sendMaxConfig['营销成本'] || sendMaxConfig['营销成本'] < 0) {
-            //   alert("营销成本不能为空且必须大于0");
-            //   return;
-            // }
-            setSendMax();
+          if (!is_check) {
+              // 处理发送上限
+              const sendMaxData = table($("#send-max").val())[0];
+              console.log("sendMaxData---->", sendMaxData, typeof sendMaxData);
+
+              if (!sendMaxData) {
+                alert("请设置发送上限！");
+                return;
+              } else {
+                sendMaxConfig = {
+                  ...sendMaxConfig,
+                  咚咚: Number(sendMaxData["咚咚"]),
+                  富媒体咚咚: Number(sendMaxData["富媒体咚咚"]),
+                  短信: Number(sendMaxData["短信"]),
+                  富媒体短信: Number(sendMaxData["富媒体短信"]),
+                  // 营销成本: Number(sendMaxData["营销成本"])
+                };
+                console.log("sendMaxConfig--->", sendMaxConfig);
+                if (Object.values(sendMaxConfig).every((value) => !value)) {
+                  alert("发送上限不能全为空");
+                  return;
+                }
+                // if (!sendMaxConfig['营销成本'] || sendMaxConfig['营销成本'] < 0) {
+                //   alert("营销成本不能为空且必须大于0");
+                //   return;
+                // }
+                setSendMax();
+          }
+         
           }
           console.log("当前环境---->", isUat);
           // 每次进入投放页面重置人群包id
@@ -1851,7 +1864,29 @@ $("body").bind("DOMNodeInserted", function () {
           }
           console.log("竞品", jp);
 
-          var sHtml =
+          var sHtml = '';
+          if (is_create_crowd) {
+            sHtml = '<table id="crowdTable" class="data"><tr><th style="width:5%">#</th><th style="width:50%">人群包名称</th><th style="width:45%">创建状态</th></tr>';
+            for (i = 0; i < data.length; i++) {
+              var uatName = (data[i] && data[i]["人群包名称"]) || `测试-${moment().format("HH:mm:ss")}`
+              var name = isUat
+              ? uatName
+              : (data["data"] && data["data"]["人群包名称"]) ||
+                (data["data"] && data["data"]["任务名"]) ||
+                `预估人数-${moment().format("HH:mm:ss")}`;
+               
+              console.log('table  uatName', uatName)
+              console.log('table  name', name)
+               
+              sHtml +=
+              "<tr><td>" +
+              (i + 1) +
+              "</td><td>" +
+              name +
+              '</td><td><span class="createStatus">未创建</span></td></tr>';
+            }
+          } else { 
+            sHtml =
             '<table class="data"><tr><th style="width:5%">#</th><th style="width:25%">投放策略</th><th style="width:55%">SKU</th><th style="width:5%">竞品</th><th style="width:10%">' +
             (is_check ? "用户数" : "投放状态") +
             "</th></tr>";
@@ -1929,14 +1964,17 @@ $("body").bind("DOMNodeInserted", function () {
                 '">等待转链</span>' :
                 "等待投放") +
               "</td></tr>";
+            }
           }
           // sHtml += '<tfoot><tr><td colspan="4">排除竞品：'+jp.length+'个</td></tr></tfoot>';
           sHtml += "</table>";
-          sHtml +=
+          var btnName = is_create_crowd ? '立即创建' : '立即投放' 
+         
+            sHtml +=
             '<button id="xzh-btn-multi-linker" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-large"><span>转链</span></button>';
-          sHtml +=
-            '<button id="xzh-btn-multi-execute" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green xzh-btn-large"><span>立即投放</span></button>';
-
+            sHtml +=
+              '<button id="xzh-btn-multi-execute" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green xzh-btn-large"><span>' + btnName + '</span></button>';
+    
           showMasker(sHtml);
 
           if (convert_url > 0) {
@@ -4622,10 +4660,12 @@ function getOptions(data, func, withApp) {
       }
     }
     console.log("人群包--->123456excludeTouchedChannels", excludeTouchedChannels);
+    var uatName = (data["data"] && data["data"]["人群包名称"]) || `测试-${moment().format("HH:mm:ss")}`
+    console.log('uatName--->', uatName)
     crowdOptions = {
       // name: (data["data"] && data["data"]["人群包名称"]) || "",
       name: isUat ?
-        `测试-${moment().format("HH:mm:ss")}` : (data["data"] && data["data"]["人群包名称"]) ||
+           uatName  : (data["data"] && data["data"]["人群包名称"]) ||
         (data["data"] && data["data"]["任务名"]) ||
         `预估人数-${moment().format("HH:mm:ss")}`,
       labelOptions: [{
@@ -5141,7 +5181,7 @@ function addTask(data, options, i, length, func) {
   }
 
   // 判断模板是否存在
-  if (data["投放渠道"] && data["文案"]) {
+  if (!is_create_crowd && data["投放渠道"] && data["文案"]) {
     const template_id = isHasTemplate(data["文案"]);
     if (!template_id) {
       return {
@@ -5281,6 +5321,7 @@ function addTask(data, options, i, length, func) {
           i
         );
         console.log("人群包--->111", currentCrowdId);
+        $($('#crowdTable').find('.createStatus')[i]).html('创建成功')
         crowdOptions_[data["人群包名称"]] = currentCrowdId;
       } else {
         console.log("人群包--->222");
@@ -5305,6 +5346,10 @@ function addTask(data, options, i, length, func) {
         msg: `圈选条件出错！`
       };
     }
+  }
+
+  if (is_create_crowd) {
+    return 
   }
 
   // 上限
