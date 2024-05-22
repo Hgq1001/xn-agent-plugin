@@ -1389,1310 +1389,2495 @@ function getMaxMarketingCost() {
 }
 getMaxMarketingCost()
 
-// 批量
-$("body").bind("DOMNodeInserted", function () {
-  if (
-    ($(".content__FKDJl").length > 0 &&
-      $(".channel-chooser__t_JjF").length > 0)
-  ) {
-    var multi = $("#dialog-multi");
-    if (multi.length == 0) {
-      // 默认值
-      let xzh_jp_default = localStorage.getItem("xzh_jp_" + pin);
-      let xzh_tag_default = localStorage.getItem("xzh_tag_" + pin);
-      xzh_jp_default = xzh_jp_default ? xzh_jp_default : "";
-      xzh_tag_default = xzh_tag_default ? xzh_tag_default : "";
 
-      var sHtml =
-        '<div class="modal__1URM8" id="dialog-multi" style="left:-505px;background:#fff;width:500px;float:right;position:absolute;top:0;z-index:99999"><div class="ant-modal-content">' +
-        '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0"><div class="title__2CoZR title__QVWfk has-icon__3dNRu"><span class="icon-wrapper__23vff"><span class="item__1SH3J">创建批量任务</span></div></div></div>' +
-        '<div class="ant-modal-body"><div class="content__34BVq content__UWhFl"><div class="header__1FeKd"></div><div class="main__-PQXV main__WU9uP">' +
-        '<div class="header-panel__2ZvKo cross-task__1E5P2 xz-vertical-gap header-panel__H2eYO send-content__R2NlL">' +
-        '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">统一配置项</div></span></div>' +
-        '<div class="body__2wdPq body__SOXZp">' +
-        '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
-        '<div class="content__1OYv3">' +
-        '<input id="xzh-execute-date" style="width:280px" class="ant-input input__2_rbb task__1t_R5" placeholder="执行日期, 如: xxxx/xx/xx, 2022/10/9" type="text" value="">' +
-        '<input id="xzh-template-date"  style="width:280px" class="ant-input xz-vertical-gap input__2_rbb task__1t_R5" placeholder="文案日期, 如: xxxx/xx/xx, 2022/10/9" type="text" value="">' +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
-        '<div class="content-row__3nMQe">' +
-        '<div class="content-col__3ruDH">' +
-        '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">发送上限</div></span></div>' +
-        '<div class="body__2wdPq  body__SOXZp">' +
-        '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
-        '<textarea id="send-max" rows="3" class="ant-input"></textarea>' +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
-        '<div class="content-row__3nMQe">' +
-        '<div class="content-col__3ruDH">' +
-        '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">批量任务</div></span></div>' +
-        '<div class="body__2wdPq  body__SOXZp">' +
-        '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
-        '<textarea id="xzh-task-list" rows="3" class="ant-input"></textarea>' +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
-        '<div class="content-row__3nMQe">' +
-        '<div class="content-col__3ruDH">' +
-        '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq"><div class="title__2CoZR title__QVWfk">排除竞品</div></span></div>' +
-        '<div class="body__2wdPq  body__SOXZp">' +
-        '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
-        `<textarea id="xzh-jp-list" rows="3" class="ant-input">${xzh_jp_default}</textarea>` +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
-        '<div class="content-row__3nMQe">' +
-        '<div class="content-col__3ruDH">' +
-        '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">人群画像</div></span></div>' +
-        '<div class="body__2wdPq  body__SOXZp">' +
-        '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
-        `<textarea id="xzh-tag-list" rows="3" class="ant-input">${xzh_tag_default}</textarea>` +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        "</div>" +
-        '<div class="ant-modal-footer"><input id="sms_template_id" type="hidden" /><button id="xzh-btn-multi-check" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z"><span>批量查询</span></button>' +
-        '<button id="xzh-btn-multi-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创建任务</span></button>' +
-        '<button id="xzh-btn-crowd-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创人群包</span></button></div>' +
-        "</div></div>";
-      $("div[role='dialog']").append(sHtml);
-
-      if (!operator.hasOwnProperty(pin)) {
-        $("#xzh-btn-task-improt").remove();
-      }
-
-      // $("#xzh-task-list").bind("tripleclick", function () {
-      //   importTask();
-      // });
-
-      // 导入任务
-      $("#xzh-btn-task-improt").bind("click", function () {
-        importTask();
-      });
-
-      getUserInfo();
-      getAiList();
-      getAllCategory()
+const targetNode = document.body;
 
 
-      var category = getAllCategory();
-      // console.log("CATEGORY", category);
+const observer = new MutationObserver((mutationsList, observer) => {
+  // 在每次 DOM 变化时触发的回调函数
+  for (let mutation of mutationsList) {
+    if (mutation.type === 'childList') {
+      // 子节点列表变化（添加或删除子节点）
+      if (
+        ($(".content__FKDJl").length > 0 &&
+          $(".channel-chooser__t_JjF").length > 0)
+      ) {
+        var multi = $("#dialog-multi");
+        if (multi.length == 0) {
+          // 默认值
+          let xzh_jp_default = localStorage.getItem("xzh_jp_" + pin);
+          let xzh_tag_default = localStorage.getItem("xzh_tag_" + pin);
+          xzh_jp_default = xzh_jp_default ? xzh_jp_default : "";
+          xzh_tag_default = xzh_tag_default ? xzh_tag_default : "";
 
-      $("#dialog-multi .content__1OYv3 button.button-size-small__1kSJV").bind(
-        "click",
-        function () {
-          var days = $(this).text();
-          days = days.substr(0, days.length - 1);
-          getExcludeTask(days);
-        }
-      );
+          var sHtml =
+            '<div class="modal__1URM8" id="dialog-multi" style="left:-505px;background:#fff;width:500px;float:right;position:absolute;top:0;z-index:99999"><div class="ant-modal-content">' +
+            '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0"><div class="title__2CoZR title__QVWfk has-icon__3dNRu"><span class="icon-wrapper__23vff"><span class="item__1SH3J">创建批量任务</span></div></div></div>' +
+            '<div class="ant-modal-body"><div class="content__34BVq content__UWhFl"><div class="header__1FeKd"></div><div class="main__-PQXV main__WU9uP">' +
+            '<div class="header-panel__2ZvKo cross-task__1E5P2 xz-vertical-gap header-panel__H2eYO send-content__R2NlL">' +
+            '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">统一配置项</div></span></div>' +
+            '<div class="body__2wdPq body__SOXZp">' +
+            '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+            '<div class="content__1OYv3">' +
+            '<input id="xzh-execute-date" style="width:280px" class="ant-input input__2_rbb task__1t_R5" placeholder="执行日期, 如: xxxx/xx/xx, 2022/10/9" type="text" value="">' +
+            '<input id="xzh-template-date"  style="width:280px" class="ant-input xz-vertical-gap input__2_rbb task__1t_R5" placeholder="文案日期, 如: xxxx/xx/xx, 2022/10/9" type="text" value="">' +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+            '<div class="content-row__3nMQe">' +
+            '<div class="content-col__3ruDH">' +
+            '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">发送上限</div></span></div>' +
+            '<div class="body__2wdPq  body__SOXZp">' +
+            '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+            '<textarea id="send-max" rows="3" class="ant-input"></textarea>' +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+            '<div class="content-row__3nMQe">' +
+            '<div class="content-col__3ruDH">' +
+            '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">批量任务</div></span></div>' +
+            '<div class="body__2wdPq  body__SOXZp">' +
+            '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+            '<textarea id="xzh-task-list" rows="3" class="ant-input"></textarea>' +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+            '<div class="content-row__3nMQe">' +
+            '<div class="content-col__3ruDH">' +
+            '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq"><div class="title__2CoZR title__QVWfk">排除竞品</div></span></div>' +
+            '<div class="body__2wdPq  body__SOXZp">' +
+            '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+            `<textarea id="xzh-jp-list" rows="3" class="ant-input">${xzh_jp_default}</textarea>` +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+            '<div class="content-row__3nMQe">' +
+            '<div class="content-col__3ruDH">' +
+            '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">人群画像</div></span></div>' +
+            '<div class="body__2wdPq  body__SOXZp">' +
+            '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+            `<textarea id="xzh-tag-list" rows="3" class="ant-input">${xzh_tag_default}</textarea>` +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            '<div class="ant-modal-footer"><input id="sms_template_id" type="hidden" /><button id="xzh-btn-multi-check" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z"><span>批量查询</span></button>' +
+            '<button id="xzh-btn-multi-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创建任务</span></button>' +
+            '<button id="xzh-btn-crowd-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创人群包</span></button></div>' +
+            "</div></div>";
+          $("div[role='dialog']").append(sHtml);
 
-      // 批量查询、投放
-      $("#xzh-btn-multi-check,#xzh-btn-multi-submit, #xzh-btn-crowd-submit").bind(
-        "click",
-        function () {
-          var is_check = true;
-          if ($(this)[0].id == "xzh-btn-multi-submit") {
-            is_check = false;
-          }
-          // console.log(is_check);
-
-          if ($(this)[0].id == "xzh-btn-crowd-submit") {
-            is_create_crowd = true;
-          }
-          if ($(this)[0].id !== "xzh-btn-crowd-submit") {
-            is_create_crowd = false;
+          if (!operator.hasOwnProperty(pin)) {
+            $("#xzh-btn-task-improt").remove();
           }
 
-          if (!is_check) {
-              // 处理发送上限
-              const sendMaxData = table($("#send-max").val())[0];
-              console.log("sendMaxData---->", sendMaxData, typeof sendMaxData);
+          // $("#xzh-task-list").bind("tripleclick", function () {
+          //   importTask();
+          // });
 
-              if (!sendMaxData) {
-                alert("请设置发送上限！");
-                return;
-              } else {
-                sendMaxConfig = {
-                  ...sendMaxConfig,
-                  咚咚: Number(sendMaxData["咚咚"]),
-                  富媒体咚咚: Number(sendMaxData["富媒体咚咚"]),
-                  短信: Number(sendMaxData["短信"]),
-                  富媒体短信: Number(sendMaxData["富媒体短信"]),
-                  // 营销成本: Number(sendMaxData["营销成本"])
-                };
-                console.log("sendMaxConfig--->", sendMaxConfig);
-                if (Object.values(sendMaxConfig).every((value) => !value)) {
-                  alert("发送上限不能全为空");
+          // 导入任务
+          $("#xzh-btn-task-improt").bind("click", function () {
+            importTask();
+          });
+
+          getUserInfo();
+          getAiList();
+          getAllCategory()
+
+
+          var category = getAllCategory();
+          // console.log("CATEGORY", category);
+
+          $("#dialog-multi .content__1OYv3 button.button-size-small__1kSJV").bind(
+            "click",
+            function () {
+              var days = $(this).text();
+              days = days.substr(0, days.length - 1);
+              getExcludeTask(days);
+            }
+          );
+
+          // 批量查询、投放
+          $("#xzh-btn-multi-check,#xzh-btn-multi-submit, #xzh-btn-crowd-submit").bind(
+            "click",
+            function () {
+              var is_check = true;
+              if ($(this)[0].id == "xzh-btn-multi-submit") {
+                is_check = false;
+              }
+              // console.log(is_check);
+
+              if ($(this)[0].id == "xzh-btn-crowd-submit") {
+                is_create_crowd = true;
+              }
+              if ($(this)[0].id !== "xzh-btn-crowd-submit") {
+                is_create_crowd = false;
+              }
+
+              if (!is_check) {
+                // 处理发送上限
+                const sendMaxData = table($("#send-max").val())[0];
+                console.log("sendMaxData---->", sendMaxData, typeof sendMaxData);
+
+                if (!sendMaxData) {
+                  alert("请设置发送上限！");
                   return;
+                } else {
+                  sendMaxConfig = {
+                    ...sendMaxConfig,
+                    咚咚: Number(sendMaxData["咚咚"]),
+                    富媒体咚咚: Number(sendMaxData["富媒体咚咚"]),
+                    短信: Number(sendMaxData["短信"]),
+                    富媒体短信: Number(sendMaxData["富媒体短信"]),
+                    // 营销成本: Number(sendMaxData["营销成本"])
+                  };
+                  console.log("sendMaxConfig--->", sendMaxConfig);
+                  if (Object.values(sendMaxConfig).every((value) => !value)) {
+                    alert("发送上限不能全为空");
+                    return;
+                  }
+                  // if (!sendMaxConfig['营销成本'] || sendMaxConfig['营销成本'] < 0) {
+                  //   alert("营销成本不能为空且必须大于0");
+                  //   return;
+                  // }
+                  setSendMax();
                 }
-                // if (!sendMaxConfig['营销成本'] || sendMaxConfig['营销成本'] < 0) {
-                //   alert("营销成本不能为空且必须大于0");
-                //   return;
-                // }
-                setSendMax();
-          }
-         
-          }
-          console.log("当前环境---->", isUat);
-          // 每次进入投放页面重置人群包id
-          crowdOptions_ = {};
 
-          // 处理投放任务
-          var data = table($("#xzh-task-list").val());
-          if (!data) {
-            alert("没有投放数据");
-            return;
-          }
+              }
+              console.log("当前环境---->", isUat);
+              // 每次进入投放页面重置人群包id
+              crowdOptions_ = {};
 
-          var search_keyword = 0;
-          var convert_url = 0;
-
-          // 人群画像
-          var tags = getTags();
-          console.log("TAGS", tags);
-
-          let executeDate = $("#xzh-execute-date").val();
-          console.log("executeDate--->日期", executeDate);
-
-          // 处理投放策略
-          for (var i = 0; i < data.length; i++) {
-            if (!data[i].hasOwnProperty("投放策略") || !data[i]["投放策略"]) {
-              data[i]["error"] = "无投放策略";
-              continue;
-            }
-            // 解析投放策略
-            var m = data[i]["投放策略"].match(
-              /^(.+)[\(（](\d+)([<>](\d+))?(?:\/(\d+))?([A-Z]?)-(\d+)(?:-(\d+))?[\)）]$/
-            );
-            console.log("m", m);
-            if (!m) {
-              data[i]["error"] = "投放策略错误";
-              continue;
-            }
-
-            data[i]["行为"] = m[1].substr(-2);
-            console.log("行为--->", data[i]["行为"]);
-
-            data[i]["圈选商品"] = [];
-
-            const labelType = m[1];
-            console.log("解析--->标签类型--->labelType", labelType);
-            const conditionsStr = data[i]["圈选条件"];
-            console.log("解析--->圈选条件--->conditionsStr", conditionsStr);
-            const conditionsArr = conditionsStr.split("\n");
-            console.log("解析--->圈选条件--->conditionsArr", conditionsArr);
-
-            if (
-              labelType.length === 4 && ["商品", "竞品", "跨品"].some((item) => labelType.includes(item))
-            ) {
-              // 商品标签 1-sku;2-sku;3-关键词;4-品类
-              console.log("标签类型--->商品标签--->111");
-              if (conditionsArr[0]) {
-                data[i]["圈选商品"] = [explode(conditionsArr[0])];
-              }
-              if (conditionsArr[1]) {
-                data[i]["圈选商品"] = [
-                  ...data[i]["圈选商品"],
-                  explode(conditionsArr[1]),
-                ];
-              }
-              if (conditionsArr[2]) {
-                data[i]["关键词"] = conditionsArr[2];
-              }
-              if (conditionsArr[3]) {
-                data[i]["圈选品类"] = [explode(conditionsArr[3])];
-              }
-            } else if (
-              ["品牌词", "产品词", "活动词", "竞品词", "行业词"].includes(
-                labelType
-              )
-            ) {
-              // 全是关键词
-              console.log("标签类型--->搜索标签--->222");
-              data[i]["关键词"] = conditionsArr.join(",");
-            } else if (
-              labelType.length === 4 && ["店铺"].some((item) => labelType.includes(item))
-            ) {
-              // 店铺标签 1-shopId(1:本店铺);2-shopId(1:本店铺);3-sku;4-关键词;5-品类
-              console.log("标签类型--->店铺标签--->333");
-              if (conditionsArr[0]) {
-                data[i]["圈选店铺"] = [explode(conditionsArr[0])];
-              }
-              if (conditionsArr[1]) {
-                data[i]["圈选店铺"] = [
-                  ...data[i]["圈选店铺"],
-                  explode(conditionsArr[1]),
-                ];
-              }
-              if (conditionsArr[2]) {
-                data[i]["圈选商品"] = [explode(conditionsArr[2])];
-              }
-              if (conditionsArr[3]) {
-                data[i]["关键词"] = conditionsArr[3];
-              }
-              if (conditionsArr[4]) {
-                data[i]["圈选品类"] = [explode(conditionsArr[4])];
-              }
-            } else if (
-              labelType.length === 4 && ["品类"].some((item) => labelType.includes(item))
-            ) {
-              console.log("标签类型--->品类标签--->444");
-              // 1-品类；2-品类；3-关键词
-              if (conditionsArr[0]) {
-                data[i]["圈选品类"] = [explode(conditionsArr[0])];
-              }
-              if (conditionsArr[1]) {
-                data[i]["圈选品类"] = [
-                  ...data[i]["圈选品类"],
-                  explode(conditionsArr[1]),
-                ];
-              }
-              if (conditionsArr[2]) {
-                data[i]["关键词"] = conditionsArr[2];
-              }
-            } else if (labelType.includes("实时")) {
-              // 所有实时标签
-              console.log(
-                "data--->实时任务时间",
-                data[i],
-                data[i]["实时任务时间"]
-              );
-              if (!data[i]["实时任务时间"]) {
-                alert("实时标签没有设置时间！");
+              // 处理投放任务
+              var data = table($("#xzh-task-list").val());
+              if (!data) {
+                alert("没有投放数据");
                 return;
               }
-              const tempHourData = data[i]["实时任务时间"].replace("~", ",");
-              let tempRealTimeLabel = [];
-              if (["商品", "竞品"].some((item) => labelType.includes(item))) {
-                console.log("标签类型--->商品实时标签--->555");
-                // 商品实时标签 1-sku;2-sku;3-关键词;4-品类
-                if (conditionsArr[0]) {
-                  tempRealTimeLabel.push(
-                    `商品实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[0]}`
-                  );
-                }
-                if (conditionsArr[1]) {
-                  tempRealTimeLabel.push(
-                    `商品实时${data[i]["行为"]}1|${tempHourData}|${conditionsArr[1]}`
-                  );
-                }
-                if (conditionsArr[2]) {
-                  tempRealTimeLabel.push(
-                    `实时搜索|${tempHourData}|${conditionsArr[2]}`
-                  );
-                }
-                if (conditionsArr[3]) {
-                  tempRealTimeLabel.push(
-                    `品类实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[3]}`
-                  );
-                }
-              } else if (labelType === "实时搜索") {
-                console.log("标签类型--->实时搜索标签--->666");
-                // 商品实时标签 1-关键词;2-关键词;3-关键词;
-                if (conditionsArr[0]) {
-                  tempRealTimeLabel.push(
-                    `实时搜索|${tempHourData}|${conditionsArr[0]}`
-                  );
-                }
-                if (conditionsArr[1]) {
-                  tempRealTimeLabel.push(
-                    `实时搜索1|${tempHourData}|${conditionsArr[1]}`
-                  );
-                }
-                if (conditionsArr[2]) {
-                  tempRealTimeLabel.push(
-                    `实时搜索2|${tempHourData}|${conditionsArr[2]}`
-                  );
-                }
-              } else if (labelType.includes("店铺")) {
-                console.log("标签类型--->店铺实时标签--->777");
-                // 商品实时标签 1-shopId;2-shopId;3-sku;4-关键词;5-品类
-                if (conditionsArr[0]) {
-                  tempRealTimeLabel.push(
-                    `${labelType}|${tempHourData}|${conditionsArr[0]}`
-                  );
-                }
-                if (conditionsArr[1]) {
-                  tempRealTimeLabel.push(
-                    `${labelType}1|${tempHourData}|${conditionsArr[1]}`
-                  );
-                }
-                if (conditionsArr[2]) {
-                  tempRealTimeLabel.push(
-                    `商品实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[2]}`
-                  );
-                }
-                if (conditionsArr[3]) {
-                  tempRealTimeLabel.push(
-                    `实时搜索|${tempHourData}|${conditionsArr[3]}`
-                  );
-                }
-                if (conditionsArr[4]) {
-                  tempRealTimeLabel.push(
-                    `品类实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[4]}`
-                  );
-                }
-              } else if (labelType.includes("品类")) {
-                console.log("标签类型--->品类实时标签--->888");
-                // 商品实时标签 1-品类;2-品类;3-关键词
-                if (conditionsArr[0]) {
-                  tempRealTimeLabel.push(
-                    `${labelType}|${tempHourData}|${conditionsArr[0]}`
-                  );
-                }
-                if (conditionsArr[1]) {
-                  tempRealTimeLabel.push(
-                    `${labelType}1|${tempHourData}|${conditionsArr[1]}`
-                  );
-                }
-                if (conditionsArr[2]) {
-                  tempRealTimeLabel.push(
-                    `实时搜索|${tempHourData}|${conditionsArr[2]}`
-                  );
-                }
-              }
-              console.log("实时标签--->tempRealTimeLabel", tempRealTimeLabel);
-              data[i]["实时标签"] = tempRealTimeLabel;
-            }
 
-            let launchDate = executeDate || data[i]["执行日期"] || "";
-            console.log("launchDate--->", launchDate);
+              var search_keyword = 0;
+              var convert_url = 0;
 
-            data[i]["圈选天数"] = m[2];
-            data[i]["比较方式"] = m[3] == "<" ? "lte" : "gte";
-            data[i]["比较数值"] = m[4] ? m[4] : 1;
-            data[i]["搜索天数"] = m[5] ? m[5] : m[2];
-            data[i]["人群画像"] = m[6];
-            data[i]["排除已购天数"] = m[7];
-            data[i]["排除已触达天数"] = m[8];
-            // data[i]["圈选商品"] = explode(data[i]["圈选商品"]);
-            data[i]["关键词"] = explode(data[i]["关键词"]);
-            data[i]["投放日期"] =
-              launchDate && data[i]["投放时间"] ?
-              new Date(launchDate + " " + data[i]["投放时间"]) :
-              null;
-            data[i]["预估人数"] = data[i]["预估人数"] ?
-              parseInt(data[i]["预估人数"]) :
-              0;
-            data[i]["排除任务"] = explode(data[i]["排除任务"]);
-            data[i]["填空商品"] = explode(data[i]["空商品"]);
+              // 人群画像
+              var tags = getTags();
+              console.log("TAGS", tags);
 
-            if (!isSku(data[i]["竞品"])) {
-              search_keyword++;
-              data[i]["竞品搜索"] = explode(data[i]["竞品"]);
-              data[i]["竞品"] = null;
-            }
+              let executeDate = $("#xzh-execute-date").val();
+              console.log("executeDate--->日期", executeDate);
 
-            data[i]["竞品"] = explode(data[i]["竞品"]);
-
-            // if (
-            //   data[i]["投放渠道"] == "咚咚" &&
-            //   data[i]["文案内容"] &&
-            //   data[i]["文案内容"].indexOf("http") < 0 &&
-            //   data[i]["文案内容"].indexOf("jd.com") < 0 &&
-            //   data[i]["文案内容"].indexOf("3.cn") < 0
-            // ) {
-            //   data[i]["文案转链"] = true;
-            //   convert_url++;
-            // }
-
-            // if (data[i]["投放渠道"] == "短信") {
-            //   data[i]["文案内容"] = null;
-            // }
-          }
-          console.log("DATA", data);
-
-          // 处理竞品
-          var jp = table($("#xzh-jp-list").val());
-          console.log("处理竞品---->11", jp);
-          var tempJp = jp;
-          if (jp) {
-            var arr = [];
-            for (i in jp) {
-              // 竞品数据
-              if (!jp[i]["SKU"] || !jp[i]["品类"]) continue;
-              if (!arr.hasOwnProperty(jp[i]["品类"])) {
-                arr[jp[i]["品类"]] = {
-                  SKU: [],
-                  品类: [],
-                  店铺: [],
-                  品类类型: jp[i]["品类类型"],
-                  天数: jp[i]["天数"],
-                };
-              }
-
-              // 处理单品、品类
-              if (isSku(jp[i]["SKU"])) {
-                arr[jp[i]["品类"]]["SKU"].push.apply(
-                  arr[jp[i]["品类"]]["SKU"],
-                  explode(jp[i]["SKU"])
+              // 处理投放策略
+              for (var i = 0; i < data.length; i++) {
+                if (!data[i].hasOwnProperty("投放策略") || !data[i]["投放策略"]) {
+                  data[i]["error"] = "无投放策略";
+                  continue;
+                }
+                // 解析投放策略
+                var m = data[i]["投放策略"].match(
+                  /^(.+)[\(（](\d+)([<>](\d+))?(?:\/(\d+))?([A-Z]?)-(\d+)(?:-(\d+))?[\)）]$/
                 );
-              } else {
-                // 排除本店铺 加购、浏览、付款
-                if (jp[i]["SKU"].includes("店铺")) {
-                  arr[jp[i]["品类"]]["品类"].push.apply(
-                    arr[jp[i]["品类"]]["店铺"],
-                    explode(jp[i]["SKU"]),
-                    "\\n"
-                  );
-                } else {
-                  arr[jp[i]["品类"]]["品类"].push.apply(
-                    arr[jp[i]["品类"]]["品类"],
-                    explode(jp[i]["SKU"]),
-                    "\\n"
-                  );
+                console.log("m", m);
+                if (!m) {
+                  data[i]["error"] = "投放策略错误";
+                  continue;
                 }
-              }
-            }
-            jp = arr;
-          }
-          console.log("竞品", jp);
 
-          var sHtml = '';
-          if (is_create_crowd) {
-            sHtml = '<table id="crowdTable" class="data"><tr><th style="width:5%">#</th><th style="width:50%">人群包名称</th><th style="width:45%">创建状态</th></tr>';
-            for (i = 0; i < data.length; i++) {
-              var uatName = (data[i] && data[i]["人群包名称"]) || `测试-${moment().format("HH:mm:ss")}`
-              var name = isUat
-              ? uatName
-              : (data["data"] && data["data"]["人群包名称"]) ||
-                (data["data"] && data["data"]["任务名"]) ||
-                `预估人数-${moment().format("HH:mm:ss")}`;
-               
-              console.log('table  uatName', uatName)
-              console.log('table  name', name)
-               
-              sHtml +=
-              "<tr><td>" +
-              (i + 1) +
-              "</td><td>" +
-              name +
-              '</td><td><span class="createStatus">未创建</span></td></tr>';
-            }
-          } else { 
-            sHtml =
-            '<table class="data"><tr><th style="width:5%">#</th><th style="width:25%">投放策略</th><th style="width:55%">SKU</th><th style="width:5%">竞品</th><th style="width:10%">' +
-            (is_check ? "用户数" : "投放状态") +
-            "</th></tr>";
-          for (i = 0; i < data.length; i++) {
-            var exsku_num = data[i]["竞品"] ? data[i]["竞品"].length : 0;
-            if (jp && jp.hasOwnProperty(data[i]["品类"])) {
-              exsku_num += jp[data[i]["品类"]]["SKU"] ? [...new Set(jp[data[i]["品类"]]["SKU"])].filter(
-                  (item) => item
-                ).length :
-                0;
-            }
-            var skuid = data[i]["圈选商品"]
-              .map(
-                (item) =>
-                '<a href="https://item.jd.com/' +
-                item +
-                '.html" target="_blank">' +
-                item +
-                "</a>"
-              )
-              .join(",");
-            if (data[i]["关键词"]) {
-              if (skuid.length > 0) skuid += "<br />";
-              skuid += data[i]["关键词"];
-            }
-            if (data[i]["文案转链"]) {
-              skuid +=
-                '<p id="xzh-content-' + i + '">' + data[i]["文案内容"] + "</p>";
-            }
-            var channel = "";
-            if (data[i]["投放渠道"] && !is_check) {
-              channel =
-                '<span class="' +
-                (data[i]["投放渠道"] == "短信" ?
-                  "xzh-label-dx" :
-                  "xzh-label-dd") +
-                '">' +
-                data[i]["投放渠道"] +
-                "</span>";
-            }
-            var title = data[i]["投放策略"];
-            // console.log(skuid);
-            if (data[i]["任务名"]) {
-              title =
-                "<strong>" +
-                data[i]["任务名"] +
-                "</strong>" +
-                channel +
-                "<br />" +
-                title;
-            } else {
-              title += channel;
-            }
-            sHtml +=
-              "<tr><td>" +
-              (i + 1) +
-              "</td><td>" +
-              title +
-              '</td><td class="xz-word-break">' +
-              skuid +
-              "</td><td>" +
-              exsku_num +
-              '</td><td id="pincount_' +
-              i +
-              '"' +
-              (data[i]["投放渠道"] == "短信" ?
-                ' class="sms_' + data[i]["文案"] + '"' :
-                "") +
-              ">" +
-              (is_check ?
-                "计算中" :
-                data[i]["文案转链"] ?
-                '<span class="xzh-label-red" id="xzh-content-status-' +
-                i +
-                '">等待转链</span>' :
-                "等待投放") +
-              "</td></tr>";
-            }
-          }
-          // sHtml += '<tfoot><tr><td colspan="4">排除竞品：'+jp.length+'个</td></tr></tfoot>';
-          sHtml += "</table>";
-          var btnName = is_create_crowd ? '立即创建' : '立即投放' 
-         
-            sHtml +=
-            '<button id="xzh-btn-multi-linker" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-large"><span>转链</span></button>';
-            sHtml +=
-              '<button id="xzh-btn-multi-execute" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green xzh-btn-large"><span>' + btnName + '</span></button>';
-    
-          showMasker(sHtml);
+                data[i]["行为"] = m[1].substr(-2);
+                console.log("行为--->", data[i]["行为"]);
 
-          if (convert_url > 0) {
-            $("#xzh-btn-multi-execute").hide();
-          } else {
-            $("#xzh-btn-multi-linker").remove();
-          }
+                data[i]["圈选商品"] = [];
 
-          // 生成条件
-          var options = [];
-          var sms_check = [];
-          for (i = 0; i < data.length; i++) {
-            console.log("生成条件--->", data[i]);
-            var option = {};
-            var exsku = [];
+                const labelType = m[1];
+                console.log("解析--->标签类型--->labelType", labelType);
+                const conditionsStr = data[i]["圈选条件"];
+                console.log("解析--->圈选条件--->conditionsStr", conditionsStr);
+                const conditionsArr = conditionsStr.split("\n");
+                console.log("解析--->圈选条件--->conditionsArr", conditionsArr);
 
-            const behavior = data[i]["行为"];
-            // 店铺浏览、加购、付款
-            if (data[i]["圈选店铺"] && data[i]["圈选店铺"].length > 0) {
-              console.log("店铺标签--->111", data[i]["圈选店铺"]);
-              let shopIdData = data[i]["圈选店铺"];
-              console.log("店铺标签--->shopIdData", shopIdData);
-              shopIdData.forEach((shopId, index) => {
-                let count = data[i]["比较数值"];
-                let lastShopId = shopId[shopId.length - 1];
-                // 自定义次数
-                if (shopId[shopId.length - 1].includes(">")) {
-                  count = shopId[shopId.length - 1].split(">")[1];
-                  lastShopId = shopId[shopId.length - 1].split(">")[0];
-                }
-                let optionValue = {
-                  days: data[i]["圈选天数"],
-                  counts: count,
-                  logic: data[i]["比较方式"],
-                  shop: [
-                    ...shopId.filter(
-                      (item, index) => index !== shopId.length - 1
-                    ),
-                    lastShopId,
-                  ],
-                };
-                if (option["店铺" + behavior]) {
-                  option["店铺" + behavior + index] = optionValue;
-                } else {
-                  option["店铺" + behavior] = optionValue;
-                }
-              });
-            }
-            // 品类浏览、加购、付款
-            if (data[i]["圈选品类"] && data[i]["圈选品类"].length > 0) {
-              let cateData = data[i]["圈选品类"];
-              console.log("品类标签--->cateData", cateData);
-              cateData.forEach((cate, index) => {
-                let curCate = cate;
-                let curBehavior = behavior;
-
-                let count = data[i]["比较数值"];
-                let lastCate = curCate[curCate.length - 1];
-                // 自定义次数
-                if (curCate[curCate.length - 1].includes(">")) {
-                  count = curCate[curCate.length - 1].split(">")[1];
-                  lastCate = curCate[curCate.length - 1].split(">")[0];
-                }
-                // 跨标签维度
-                if (curCate.join(",").includes("-")) {
-                  curCate = cate.join(",").split("-")[0].split(",");
-                  curBehavior = cate.join(",").split("-")[1];
-                  lastCate = curCate[curCate.length - 1];
-                }
-                let optionValue = {
-                  days: data[i]["圈选天数"],
-                  counts: count,
-                  cate: [
-                    ...curCate.filter(
-                      (item, index, arr) => index !== arr.length - 1
-                    ),
-                    lastCate,
-                  ],
-                };
-                if (option["品类" + curBehavior]) {
-                  option["品类" + curBehavior + index] = optionValue;
-                } else {
-                  option["品类" + curBehavior] = optionValue;
-                }
-              });
-              // option["品类" + data[i]["行为"]] = {
-              //   days: data[i]["圈选天数"],
-              //   cate: [data[i]["圈选品类"]],
-              // };
-            }
-            // 浏览、加购、付款
-            if (data[i]["圈选商品"].length > 0) {
-              console.log("商品标签--->111", data[i]["圈选商品"]);
-              let skuData = data[i]["圈选商品"];
-              skuData.forEach((sku, index) => {
-                let curSku = sku;
-                let curBehavior = behavior;
-
-                let count = data[i]["比较数值"];
-                let lastSku = curSku[curSku.length - 1];
-                console.log("跨标签维度--->lastSku", lastSku);
-                // 自定义次数
-                if (curSku[curSku.length - 1].includes(">")) {
-                  count = curSku[curSku.length - 1].split(">")[1];
-                  lastSku = curSku[curSku.length - 1].split(">")[0];
-                }
-                // 跨标签维度
-                if (sku.join(",").includes("-")) {
-                  curSku = sku.join(",").split("-")[0].split(",");
-                  curBehavior = sku.join(",").split("-")[1];
-                  lastSku = curSku[curSku.length - 1];
-                  console.log("跨标签维度--->curSku", curSku, curBehavior);
-                }
-                let optionValue = {
-                  days: data[i]["圈选天数"],
-                  counts: count,
-                  logic: data[i]["比较方式"],
-                  spacer: data[i]["填空商品"],
-                  sku: [
-                    ...[...new Set(curSku)]
-                    .filter((item) => item)
-                    .filter((item, index, arr) => index !== arr.length - 1),
-                    lastSku,
-                  ], //排重
-                };
-                if (option[curBehavior]) {
-                  option[curBehavior + index] = optionValue;
-                } else {
-                  option[curBehavior] = optionValue;
-                }
-              });
-              // 排除自己
-              exsku = skuData.flat(Infinity);
-            }
-            // 实时标签
-            if (data[i]["实时标签"] && data[i]["实时标签"].length > 0) {
-              console.log("实时标签--->222", data[i]["实时标签"]);
-              let realTimeLabelArr = data[i]["实时标签"]
-                .filter((item) => item)
-                .map((item) => {
-                  if (item.includes(">")) {
-                    return item.replace(">", "|&|");
-                  }
-                  return item;
-                });
-              realTimeLabelArr.forEach((item, index) => {
-                let realTimeLabelItem = item.split("|");
-                if (option[realTimeLabelItem[0]]) {
-                  option[realTimeLabelItem[0] + index] = realTimeLabelItem;
-                } else {
-                  option[realTimeLabelItem[0]] = realTimeLabelItem;
-                }
-              });
-            }
-
-            // 排除竞品
-            if (data[i]["竞品"]) {
-              exsku = exsku.concat(data[i]["竞品"]);
-            }
-
-            console.log("tempJp---->", tempJp);
-            // let jpData = tempJp && tempJp.filter(item=>item["品类"] === data[i]["品类"])
-            let jpData = jp && jp[data[i]["品类"]];
-            console.log("jpData---->", jpData);
-            if (jp && jpData) {
-              if (jpData["SKU"].length > 0) {
-                // SKU竞品
-                exsku = exsku.concat(jp[data[i]["品类"]]["SKU"]);
-              }
-            }
-
-            console.log("options----00>", option);
-            // 排除标签
-            if (tempJp) {
-              // 执行表与竞品分析表品类对应上
-              var tempJpCateData = tempJp.filter(
-                (item) => item["品类"] === data[i]["品类"]
-              );
-              console.log("tempJpCateData---->", tempJpCateData);
-              let newTempJpCateData = [];
-              // 如果竞品分析中，品类类型是 付款|浏览|加购 格式，则需遍历
-              tempJpCateData.forEach((item, index) => {
-                let categoryType = item["品类类型"].split("|");
-                if (categoryType.length > 1) {
-                  categoryType.forEach((type) => {
-                    newTempJpCateData.push({
-                      ...item,
-                      品类类型: type,
-                    });
-                  });
-                } else {
-                  newTempJpCateData.push(item);
-                }
-              });
-              console.log("newTempJpCateData---->", newTempJpCateData);
-              newTempJpCateData.forEach((item, index) => {
-                if (!item["SKU"]) return;
-                let days = item["天数"] || data[i]["排除已购天数"];
-                // 如果浏览类型-天数大于30
                 if (
-                  item["品类类型"].includes("浏览") &&
-                  !EXCLUDE_DAYS_LIU_LAN.includes(days)
+                  labelType.length === 4 && ["商品", "竞品", "跨品"].some((item) => labelType.includes(item))
                 ) {
-                  days = data[i]["排除已购天数"];
-                }
-                let optionValue = {};
-                if (item["品类类型"].includes("实时")) {
-                  optionValue = [];
-                  optionValue[0] = item["品类类型"];
-                  optionValue[1] = item["天数"].replace("~", ",");
-                  optionValue[2] = item["SKU"];
-                  optionValue[3] = "-";
-                  optionValue[4] = item["次数"];
-                } else if (item["品类类型"].includes("店铺")) {
-                  // 本店铺加购、浏览、付款
-                  if (item["SKU"] === "本店铺") {
-                    optionValue = {
-                      days: item["天数"],
-                      counts: item["次数"] || data[i]["比较数值"] || 1,
-                      logic: data[i]["比较方式"],
-                      shop: ["1"],
-                      diff: true,
-                    };
-                  } else {
-                    // 店铺加购、浏览、付款
-                    optionValue = {
-                      days: item["天数"],
-                      counts: item["次数"] || data[i]["比较数值"] || 1,
-                      logic: data[i]["比较方式"],
-                      shop: [...new Set(item["SKU"].split(","))]
-                        .filter((item) => item)
-                        .map((item) => item.trim()),
-                      diff: true,
-                    };
+                  // 商品标签 1-sku;2-sku;3-关键词;4-品类
+                  console.log("标签类型--->商品标签--->111");
+                  if (conditionsArr[0]) {
+                    data[i]["圈选商品"] = [explode(conditionsArr[0])];
                   }
-                } else if (item["品类类型"] === "搜索") {
-                  // 搜索标签
-                  optionValue = {
-                    days: days,
-                    keywords: item["SKU"].split(","),
-                    diff: true,
-                    counts: item["次数"] || data[i]["比较数值"] || 1,
-                  };
-                } else if (isSku(item["SKU"])) {
-                  // SKU 相关
-                  optionValue = {
-                    days: days,
-                    sku: [...new Set(item["SKU"].split(","))]
-                      .filter((item) => item)
-                      .map((item) => item.trim()), //排重
-                    diff: true,
-                    counts: item["次数"] || data[i]["比较数值"] || 1,
-                  };
-                } else {
-                  // 品类竞品
-                  optionValue = {
-                    days: days,
-                    cate: item["SKU"],
-                    diff: true,
-                    counts: item["次数"] || data[i]["比较数值"] || 1,
-                  };
-                }
-                let type = item["品类类型"];
-                // 如果品类类型存在，则key值+1，因为存在天数维度不同的原因
-                if (option[type + "1"]) {
-                  option[type + (index + 1 + 1)] = optionValue;
-                } else {
-                  option[type + "1"] = optionValue;
-                }
-              });
-            }
-            console.log("options----11>", option);
-
-            // 搜索关键词
-            if (data[i]["关键词"] && data[i]["关键词"].length > 0) {
-              if (data[i]["行为"] != "搜索" && !data[i]["搜索天数"]) {
-                data[i]["搜索天数"] = data[i]["圈选天数"];
-              }
-              if (data[i]["搜索天数"] == 1) {
-                alert("无1日搜索");
-                $("#pincount_" + i).text("无1日搜索");
-                options[i] = undefined;
-                continue;
-              }
-              option["搜索"] = {
-                days: data[i]["行为"] == "搜索" ?
-                  data[i]["圈选天数"] : data[i]["搜索天数"],
-                keywords: data[i]["关键词"],
-              };
-            }
-
-            // 已触达标签（对应表格中的排除任务）
-            if (data[i]["排除任务"] && data[i]["排除任务"].length > 0) {
-              option["排除任务"] = data[i]["排除任务"];
-            }
-
-            if (data[i]["人群画像"]) {
-              if (!tags || !tags.hasOwnProperty(data[i]["人群画像"])) {
-                alert("无人群画像【" + data[i]["人群画像"] + "】");
-                $("#pincount_" + i).text("无人群画像");
-                $("#pincount_" + i)
-                  .parent()
-                  .addClass("error");
-                return;
-              }
-              $.extend(option, tags[data[i]["人群画像"]]);
-            }
-            // options.push(option);
-
-            console.log("options----22>", option);
-            options[i] = option;
-          }
-
-          // return;
-          console.log("人群包名称1--->", options, data, is_check);
-          // console.log('stop-->停止')
-          // return
-          if (is_check) {
-            // 查询默认执行
-            for (i = 0; i < options.length; i++) {
-              if (options[i] == undefined) {
-                continue;
-              }
-              (function (i) {
-                var t = 12500;
-                if (options.length <= 10) {
-                  t = 10000;
-                }
-
-                setTimeout(function () {
-                  getPinCount({
-                      ...options[i],
-                      data: data[i],
-                      number: i,
-                    },
-                    function (res) {
-                      if (res.state == "FAILURE" || res.state == "ERROR") {
-                        $("#pincount_" + i).text(res.result);
-                        $("#pincount_" + i)
-                          .parent()
-                          .addClass("error");
-                        return;
-                      }
-                      $("#pincount_" + i).text(res.data);
-                      if (res.data) {
-                        data[i]["pincount"] = parseInt(res.data);
-                      }
-                      if (res.id) {
-                        data[i]["crowdId"] = parseInt(res.id);
-                      }
-                    }
-                  );
-                }, (i + 1) * t);
-              })(i);
-            }
-          }
-          // 执行投放
-          $("#xzh-btn-multi-execute").bind("click", function () {
-            var sms_template_id = $("#sms_template_id").val();
-            var exclude_task_id = $("#xzh-exclude-task").val();
-
-            for (i = 0; i < options.length; i++) {
-              // 增加一键重投
-              if (
-                options[i] == undefined ||
-                $("#pincount_" + i)
-                .parent()
-                .hasClass("ok")
-              ) {
-                continue;
-              }
-              if (
-                $("#pincount_" + i)
-                .parent()
-                .hasClass("error")
-              ) {
-                $("#pincount_" + i)
-                  .parent()
-                  .removeClass("error");
-                $("#pincount_" + i).text("重新投放");
-              }
-              (function (i) {
-                var t = ADD_TASK_TIMER;
-                if (options.length <= 3) {
-                  t = ADD_TASK_LESS_THAN_3_TIMER;
-                }
-
-                setTimeout(function () {
+                  if (conditionsArr[1]) {
+                    data[i]["圈选商品"] = [
+                      ...data[i]["圈选商品"],
+                      explode(conditionsArr[1]),
+                    ];
+                  }
+                  if (conditionsArr[2]) {
+                    data[i]["关键词"] = conditionsArr[2];
+                  }
+                  if (conditionsArr[3]) {
+                    data[i]["圈选品类"] = [explode(conditionsArr[3])];
+                  }
+                } else if (
+                  ["品牌词", "产品词", "活动词", "竞品词", "行业词"].includes(
+                    labelType
+                  )
+                ) {
+                  // 全是关键词
+                  console.log("标签类型--->搜索标签--->222");
+                  data[i]["关键词"] = conditionsArr.join(",");
+                } else if (
+                  labelType.length === 4 && ["店铺"].some((item) => labelType.includes(item))
+                ) {
+                  // 店铺标签 1-shopId(1:本店铺);2-shopId(1:本店铺);3-sku;4-关键词;5-品类
+                  console.log("标签类型--->店铺标签--->333");
+                  if (conditionsArr[0]) {
+                    data[i]["圈选店铺"] = [explode(conditionsArr[0])];
+                  }
+                  if (conditionsArr[1]) {
+                    data[i]["圈选店铺"] = [
+                      ...data[i]["圈选店铺"],
+                      explode(conditionsArr[1]),
+                    ];
+                  }
+                  if (conditionsArr[2]) {
+                    data[i]["圈选商品"] = [explode(conditionsArr[2])];
+                  }
+                  if (conditionsArr[3]) {
+                    data[i]["关键词"] = conditionsArr[3];
+                  }
+                  if (conditionsArr[4]) {
+                    data[i]["圈选品类"] = [explode(conditionsArr[4])];
+                  }
+                } else if (
+                  labelType.length === 4 && ["品类"].some((item) => labelType.includes(item))
+                ) {
+                  console.log("标签类型--->品类标签--->444");
+                  // 1-品类；2-品类；3-关键词
+                  if (conditionsArr[0]) {
+                    data[i]["圈选品类"] = [explode(conditionsArr[0])];
+                  }
+                  if (conditionsArr[1]) {
+                    data[i]["圈选品类"] = [
+                      ...data[i]["圈选品类"],
+                      explode(conditionsArr[1]),
+                    ];
+                  }
+                  if (conditionsArr[2]) {
+                    data[i]["关键词"] = conditionsArr[2];
+                  }
+                } else if (labelType.includes("实时")) {
+                  // 所有实时标签
                   console.log(
-                    "这是第" +
-                    (i + 1) +
-                    "个任务，时间为：" +
-                    moment().format("YYYY-MM-DD HH:mm:ss")
-                  );
-                  if (
-                    exclude_task_id &&
-                    exclude_task_id.length > 0 &&
-                    !data[i]["排除任务"].length
-                  ) {
-                    data[i]["排除任务"] = exclude_task_id.split(",");
-                  }
-                  var res = addTask(
+                    "data--->实时任务时间",
                     data[i],
-                    options[i],
-                    i,
-                    data.length,
-                    function (res) {
-                      if (res.state == "FAILURE" || res.state == "ERROR") {
-                        $("#pincount_" + i).text(res.result);
-                        $("#pincount_" + i)
-                          .parent()
-                          .addClass("error");
-                        $("#xzh-btn-multi-execute").show();
-                        $("#xzh-btn-multi-execute span").text("失败重投");
-                        return;
-                      }
-                      $("#pincount_" + i).text(res.data);
-                      $("#pincount_" + i)
-                        .parent()
-                        .addClass("ok");
-                      // 回传数据
-                      var res_data = $.parseJSON(this.data);
-                      console.log(this.data);
-                    }
+                    data[i]["实时任务时间"]
                   );
-                  if (!res.ok) {
-                    $("#pincount_" + i).text(res.msg);
-                    $("#pincount_" + i)
-                      .parent()
-                      .addClass("error");
-                    $("#xzh-btn-multi-execute").show();
-                    $("#xzh-btn-multi-execute span").text("失败重投");
+                  if (!data[i]["实时任务时间"]) {
+                    alert("实时标签没有设置时间！");
+                    return;
                   }
-                  console.log("RES" + i, res);
-                }, (i + 1) * t + 2000);
-              })(i);
-            }
-            $(this).hide();
-          });
+                  const tempHourData = data[i]["实时任务时间"].replace("~", ",");
+                  let tempRealTimeLabel = [];
+                  if (["商品", "竞品"].some((item) => labelType.includes(item))) {
+                    console.log("标签类型--->商品实时标签--->555");
+                    // 商品实时标签 1-sku;2-sku;3-关键词;4-品类
+                    if (conditionsArr[0]) {
+                      tempRealTimeLabel.push(
+                        `商品实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[0]}`
+                      );
+                    }
+                    if (conditionsArr[1]) {
+                      tempRealTimeLabel.push(
+                        `商品实时${data[i]["行为"]}1|${tempHourData}|${conditionsArr[1]}`
+                      );
+                    }
+                    if (conditionsArr[2]) {
+                      tempRealTimeLabel.push(
+                        `实时搜索|${tempHourData}|${conditionsArr[2]}`
+                      );
+                    }
+                    if (conditionsArr[3]) {
+                      tempRealTimeLabel.push(
+                        `品类实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[3]}`
+                      );
+                    }
+                  } else if (labelType === "实时搜索") {
+                    console.log("标签类型--->实时搜索标签--->666");
+                    // 商品实时标签 1-关键词;2-关键词;3-关键词;
+                    if (conditionsArr[0]) {
+                      tempRealTimeLabel.push(
+                        `实时搜索|${tempHourData}|${conditionsArr[0]}`
+                      );
+                    }
+                    if (conditionsArr[1]) {
+                      tempRealTimeLabel.push(
+                        `实时搜索1|${tempHourData}|${conditionsArr[1]}`
+                      );
+                    }
+                    if (conditionsArr[2]) {
+                      tempRealTimeLabel.push(
+                        `实时搜索2|${tempHourData}|${conditionsArr[2]}`
+                      );
+                    }
+                  } else if (labelType.includes("店铺")) {
+                    console.log("标签类型--->店铺实时标签--->777");
+                    // 商品实时标签 1-shopId;2-shopId;3-sku;4-关键词;5-品类
+                    if (conditionsArr[0]) {
+                      tempRealTimeLabel.push(
+                        `${labelType}|${tempHourData}|${conditionsArr[0]}`
+                      );
+                    }
+                    if (conditionsArr[1]) {
+                      tempRealTimeLabel.push(
+                        `${labelType}1|${tempHourData}|${conditionsArr[1]}`
+                      );
+                    }
+                    if (conditionsArr[2]) {
+                      tempRealTimeLabel.push(
+                        `商品实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[2]}`
+                      );
+                    }
+                    if (conditionsArr[3]) {
+                      tempRealTimeLabel.push(
+                        `实时搜索|${tempHourData}|${conditionsArr[3]}`
+                      );
+                    }
+                    if (conditionsArr[4]) {
+                      tempRealTimeLabel.push(
+                        `品类实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[4]}`
+                      );
+                    }
+                  } else if (labelType.includes("品类")) {
+                    console.log("标签类型--->品类实时标签--->888");
+                    // 商品实时标签 1-品类;2-品类;3-关键词
+                    if (conditionsArr[0]) {
+                      tempRealTimeLabel.push(
+                        `${labelType}|${tempHourData}|${conditionsArr[0]}`
+                      );
+                    }
+                    if (conditionsArr[1]) {
+                      tempRealTimeLabel.push(
+                        `${labelType}1|${tempHourData}|${conditionsArr[1]}`
+                      );
+                    }
+                    if (conditionsArr[2]) {
+                      tempRealTimeLabel.push(
+                        `实时搜索|${tempHourData}|${conditionsArr[2]}`
+                      );
+                    }
+                  }
+                  console.log("实时标签--->tempRealTimeLabel", tempRealTimeLabel);
+                  data[i]["实时标签"] = tempRealTimeLabel;
+                }
 
-          $("#xzh-btn-multi-linker").bind("click", function () {
-            convertUrls(data);
-            $(this).remove();
-            setTimeout(function () {
-              $("#xzh-btn-multi-execute").show();
-            }, convert_url * 500);
-          });
-        }
-      );
-    }
+                let launchDate = executeDate || data[i]["执行日期"] || "";
+                console.log("launchDate--->", launchDate);
 
-    // 保存数据
-    $("#xzh-jp-list").bind("input propertychange", function () {
-      var val = $("#xzh-jp-list").val();
-      var key = "xzh_jp_" + pin;
-      if (val.length == 0) {
-        localStorage.removeItem(key);
-      } else {
-        localStorage.setItem(key, val);
-      }
-    });
-    $("#xzh-tag-list").bind("input propertychange", function () {
-      var val = $("#xzh-tag-list").val();
-      var key = "xzh_tag_" + pin;
-      if (val.length == 0) {
-        localStorage.removeItem(key);
-      } else {
-        localStorage.setItem(key, val);
-      }
-    });
+                data[i]["圈选天数"] = m[2];
+                data[i]["比较方式"] = m[3] == "<" ? "lte" : "gte";
+                data[i]["比较数值"] = m[4] ? m[4] : 1;
+                data[i]["搜索天数"] = m[5] ? m[5] : m[2];
+                data[i]["人群画像"] = m[6];
+                data[i]["排除已购天数"] = m[7];
+                data[i]["排除已触达天数"] = m[8];
+                // data[i]["圈选商品"] = explode(data[i]["圈选商品"]);
+                data[i]["关键词"] = explode(data[i]["关键词"]);
+                data[i]["投放日期"] =
+                  launchDate && data[i]["投放时间"] ?
+                  new Date(launchDate + " " + data[i]["投放时间"]) :
+                  null;
+                data[i]["预估人数"] = data[i]["预估人数"] ?
+                  parseInt(data[i]["预估人数"]) :
+                  0;
+                data[i]["排除任务"] = explode(data[i]["排除任务"]);
+                data[i]["填空商品"] = explode(data[i]["空商品"]);
 
-    // 获取短信ID
-    $("a.link__1hhMI:contains('使用')").bind("click", function () {
-      $("#sms_template_id").val(
-        $(this).parent().parent("[data-row-key]").data("row-key")
-      );
-    });
+                if (!isSku(data[i]["竞品"])) {
+                  search_keyword++;
+                  data[i]["竞品搜索"] = explode(data[i]["竞品"]);
+                  data[i]["竞品"] = null;
+                }
 
+                data[i]["竞品"] = explode(data[i]["竞品"]);
 
-  }
+                // if (
+                //   data[i]["投放渠道"] == "咚咚" &&
+                //   data[i]["文案内容"] &&
+                //   data[i]["文案内容"].indexOf("http") < 0 &&
+                //   data[i]["文案内容"].indexOf("jd.com") < 0 &&
+                //   data[i]["文案内容"].indexOf("3.cn") < 0
+                // ) {
+                //   data[i]["文案转链"] = true;
+                //   convert_url++;
+                // }
 
-  // 批量短信
-  if (
-    $(".add-sms-form__1rIGm").length > 0 ||
-    $(".add-sms-form__Rdh3C").length > 0
-  ) {
-    var multi = $("#dialog-multi-sms");
-    if (multi.length == 0) {
-      // 默认值
-      var sHtml =
-        '<div class="modal__1URM8" id="dialog-multi-sms" style="left:-454px;background:#fff;width:450px;float:right;position:absolute;top:0;z-index:99999"><div class="ant-modal-content">' +
-        '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0"><div class="title__2CoZR title__QVWfk has-icon__3dNRu"><span class="icon-wrapper__23vff"><span class="item__1SH3J">创建批量任务</span></div></div></div>' +
-        '<div class="ant-modal-body"><div class="content__34BVq"><div class="header__1FeKd"></div><div class="main__-PQXV">' +
-        '<div class="header-panel__2ZvKo send-content__2POVc header-panel__H2eYO send-content__R2NlL"><div class="content-row__3nMQe content-row__IsJpm"><div class="content-col__3ruDH content-col__D6uWW"><div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">批量创建模板</div></span><span class="header-right__2MwE0"></span></div>' +
-        '<div class="body__2wdPq"><div class="content-panel__1Q316"><textarea id="xzh-sms-list" rows="20" class="ant-input"></textarea></div>' +
-        "</div></div>" +
-        "</div>" +
-        '<div class="ant-modal-footer"><button id="xzh-btn-multi-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创建模板</span></button></div>' +
-        "</div></div>";
-      $("div[role='dialog']").append(sHtml);
-
-      // 批量查询、投放
-      $("#xzh-btn-multi-submit").bind("click", function () {
-        // 处理投放任务
-        var data = table($("#xzh-sms-list").val());
-        // console.log("DATA", data);
-        if (!data) {
-          alert("没有短信数据");
-          return;
-        }
-
-        console.log("DATA", data);
-
-        var sHtml =
-          '<table class="data"><tr><th style="width:5%">#</th><th style="width:10%">模板类型</th><th style="width:10%">模板名称</th><th style="width:40%">文案内容</th><th style="width:10%">商品ID</th><th style="width:10%">活动配置key</th><th style="width:10%">优惠券链接</th><th style="width:10%">状态</th></tr>';
-        for (i = 0; i < data.length; i++) {
-          sHtml +=
-            "<tr><td>" +
-            (i + 1) +
-            "</td><td>" +
-            data[i]["模板类型"] +
-            "</td><td>" +
-            data[i]["模板名称"] +
-            '</td><td class="xz-word-break">' +
-            data[i]["文案内容"] +
-            "</td>" +
-            `<td>${data[i]["商品id"] || "--"}</td>` +
-            `<td>${data[i]["活动配置key"] || "--"}</td>` +
-            `<td>${data[i]["优惠券链接"] || "--"}</td>` +
-            '<td id="pincount_' +
-            i +
-            '">等待创建</td></tr>';
-        }
-        sHtml += "</table>";
-        sHtml +=
-          '<input id="sms_signature"><button id="xzh-btn-multi-execute" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green xzh-btn-large"><span>立即创建</span></button>';
-
-        showMasker(sHtml);
-
-        // 获取短信签名
-        $.ajax({
-          url: "/mkt/api/sms/signature/list",
-          type: "GET",
-          dataType: "json",
-          success: function (res) {
-            for (var i = 0; i < res.data.length; i++) {
-              console.log(res.data[i]);
-              if (res.data[i].status == 1) {
-                $("#sms_signature").val(res.data[i].newSignature);
-                return;
+                // if (data[i]["投放渠道"] == "短信") {
+                //   data[i]["文案内容"] = null;
+                // }
               }
-            }
-          },
-        });
+              console.log("DATA", data);
 
-        // 执行投放
-        $("#xzh-btn-multi-execute").bind("click", function () {
-          for (i = 0; i < data.length; i++) {
-            if (data[i] == undefined) {
-              continue;
-            }
-            (function (i) {
-              var t = 100;
+              // 处理竞品
+              var jp = table($("#xzh-jp-list").val());
+              console.log("处理竞品---->11", jp);
+              var tempJp = jp;
+              if (jp) {
+                var arr = [];
+                for (i in jp) {
+                  // 竞品数据
+                  if (!jp[i]["SKU"] || !jp[i]["品类"]) continue;
+                  if (!arr.hasOwnProperty(jp[i]["品类"])) {
+                    arr[jp[i]["品类"]] = {
+                      SKU: [],
+                      品类: [],
+                      店铺: [],
+                      品类类型: jp[i]["品类类型"],
+                      天数: jp[i]["天数"],
+                    };
+                  }
 
-              setTimeout(function () {
-                var res = addSms(data[i], function (res) {
-                  if (res.state == "FAILURE" || res.state == "ERROR") {
-                    $("#pincount_" + i).text(res.result);
+                  // 处理单品、品类
+                  if (isSku(jp[i]["SKU"])) {
+                    arr[jp[i]["品类"]]["SKU"].push.apply(
+                      arr[jp[i]["品类"]]["SKU"],
+                      explode(jp[i]["SKU"])
+                    );
+                  } else {
+                    // 排除本店铺 加购、浏览、付款
+                    if (jp[i]["SKU"].includes("店铺")) {
+                      arr[jp[i]["品类"]]["品类"].push.apply(
+                        arr[jp[i]["品类"]]["店铺"],
+                        explode(jp[i]["SKU"]),
+                        "\\n"
+                      );
+                    } else {
+                      arr[jp[i]["品类"]]["品类"].push.apply(
+                        arr[jp[i]["品类"]]["品类"],
+                        explode(jp[i]["SKU"]),
+                        "\\n"
+                      );
+                    }
+                  }
+                }
+                jp = arr;
+              }
+              console.log("竞品", jp);
+
+              var sHtml = '';
+              if (is_create_crowd) {
+                sHtml = '<table id="crowdTable" class="data"><tr><th style="width:5%">#</th><th style="width:50%">人群包名称</th><th style="width:45%">创建状态</th></tr>';
+                for (i = 0; i < data.length; i++) {
+                  var uatName = (data[i] && data[i]["人群包名称"]) || `测试-${moment().format("HH:mm:ss")}`
+                  var name = isUat ?
+                    uatName :
+                    (data["data"] && data["data"]["人群包名称"]) ||
+                    (data["data"] && data["data"]["任务名"]) ||
+                    `预估人数-${moment().format("HH:mm:ss")}`;
+
+                  console.log('table  uatName', uatName)
+                  console.log('table  name', name)
+
+                  sHtml +=
+                    "<tr><td>" +
+                    (i + 1) +
+                    "</td><td>" +
+                    name +
+                    '</td><td><span class="createStatus">未创建</span></td></tr>';
+                }
+              } else {
+                sHtml =
+                  '<table class="data"><tr><th style="width:5%">#</th><th style="width:25%">投放策略</th><th style="width:55%">SKU</th><th style="width:5%">竞品</th><th style="width:10%">' +
+                  (is_check ? "用户数" : "投放状态") +
+                  "</th></tr>";
+                for (i = 0; i < data.length; i++) {
+                  var exsku_num = data[i]["竞品"] ? data[i]["竞品"].length : 0;
+                  if (jp && jp.hasOwnProperty(data[i]["品类"])) {
+                    exsku_num += jp[data[i]["品类"]]["SKU"] ? [...new Set(jp[data[i]["品类"]]["SKU"])].filter(
+                        (item) => item
+                      ).length :
+                      0;
+                  }
+                  var skuid = data[i]["圈选商品"]
+                    .map(
+                      (item) =>
+                      '<a href="https://item.jd.com/' +
+                      item +
+                      '.html" target="_blank">' +
+                      item +
+                      "</a>"
+                    )
+                    .join(",");
+                  if (data[i]["关键词"]) {
+                    if (skuid.length > 0) skuid += "<br />";
+                    skuid += data[i]["关键词"];
+                  }
+                  if (data[i]["文案转链"]) {
+                    skuid +=
+                      '<p id="xzh-content-' + i + '">' + data[i]["文案内容"] + "</p>";
+                  }
+                  var channel = "";
+                  if (data[i]["投放渠道"] && !is_check) {
+                    channel =
+                      '<span class="' +
+                      (data[i]["投放渠道"] == "短信" ?
+                        "xzh-label-dx" :
+                        "xzh-label-dd") +
+                      '">' +
+                      data[i]["投放渠道"] +
+                      "</span>";
+                  }
+                  var title = data[i]["投放策略"];
+                  // console.log(skuid);
+                  if (data[i]["任务名"]) {
+                    title =
+                      "<strong>" +
+                      data[i]["任务名"] +
+                      "</strong>" +
+                      channel +
+                      "<br />" +
+                      title;
+                  } else {
+                    title += channel;
+                  }
+                  sHtml +=
+                    "<tr><td>" +
+                    (i + 1) +
+                    "</td><td>" +
+                    title +
+                    '</td><td class="xz-word-break">' +
+                    skuid +
+                    "</td><td>" +
+                    exsku_num +
+                    '</td><td id="pincount_' +
+                    i +
+                    '"' +
+                    (data[i]["投放渠道"] == "短信" ?
+                      ' class="sms_' + data[i]["文案"] + '"' :
+                      "") +
+                    ">" +
+                    (is_check ?
+                      "计算中" :
+                      data[i]["文案转链"] ?
+                      '<span class="xzh-label-red" id="xzh-content-status-' +
+                      i +
+                      '">等待转链</span>' :
+                      "等待投放") +
+                    "</td></tr>";
+                }
+              }
+              // sHtml += '<tfoot><tr><td colspan="4">排除竞品：'+jp.length+'个</td></tr></tfoot>';
+              sHtml += "</table>";
+              var btnName = is_create_crowd ? '立即创建' : '立即投放'
+
+              sHtml +=
+                '<button id="xzh-btn-multi-linker" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-large"><span>转链</span></button>';
+              sHtml +=
+                '<button id="xzh-btn-multi-execute" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green xzh-btn-large"><span>' + btnName + '</span></button>';
+
+              showMasker(sHtml);
+
+              if (convert_url > 0) {
+                $("#xzh-btn-multi-execute").hide();
+              } else {
+                $("#xzh-btn-multi-linker").remove();
+              }
+
+              // 生成条件
+              var options = [];
+              var sms_check = [];
+              for (i = 0; i < data.length; i++) {
+                console.log("生成条件--->", data[i]);
+                var option = {};
+                var exsku = [];
+
+                const behavior = data[i]["行为"];
+                // 店铺浏览、加购、付款
+                if (data[i]["圈选店铺"] && data[i]["圈选店铺"].length > 0) {
+                  console.log("店铺标签--->111", data[i]["圈选店铺"]);
+                  let shopIdData = data[i]["圈选店铺"];
+                  console.log("店铺标签--->shopIdData", shopIdData);
+                  shopIdData.forEach((shopId, index) => {
+                    let count = data[i]["比较数值"];
+                    let lastShopId = shopId[shopId.length - 1];
+                    // 自定义次数
+                    if (shopId[shopId.length - 1].includes(">")) {
+                      count = shopId[shopId.length - 1].split(">")[1];
+                      lastShopId = shopId[shopId.length - 1].split(">")[0];
+                    }
+                    let optionValue = {
+                      days: data[i]["圈选天数"],
+                      counts: count,
+                      logic: data[i]["比较方式"],
+                      shop: [
+                        ...shopId.filter(
+                          (item, index) => index !== shopId.length - 1
+                        ),
+                        lastShopId,
+                      ],
+                    };
+                    if (option["店铺" + behavior]) {
+                      option["店铺" + behavior + index] = optionValue;
+                    } else {
+                      option["店铺" + behavior] = optionValue;
+                    }
+                  });
+                }
+                // 品类浏览、加购、付款
+                if (data[i]["圈选品类"] && data[i]["圈选品类"].length > 0) {
+                  let cateData = data[i]["圈选品类"];
+                  console.log("品类标签--->cateData", cateData);
+                  cateData.forEach((cate, index) => {
+                    let curCate = cate;
+                    let curBehavior = behavior;
+
+                    let count = data[i]["比较数值"];
+                    let lastCate = curCate[curCate.length - 1];
+                    // 自定义次数
+                    if (curCate[curCate.length - 1].includes(">")) {
+                      count = curCate[curCate.length - 1].split(">")[1];
+                      lastCate = curCate[curCate.length - 1].split(">")[0];
+                    }
+                    // 跨标签维度
+                    if (curCate.join(",").includes("-")) {
+                      curCate = cate.join(",").split("-")[0].split(",");
+                      curBehavior = cate.join(",").split("-")[1];
+                      lastCate = curCate[curCate.length - 1];
+                    }
+                    let optionValue = {
+                      days: data[i]["圈选天数"],
+                      counts: count,
+                      cate: [
+                        ...curCate.filter(
+                          (item, index, arr) => index !== arr.length - 1
+                        ),
+                        lastCate,
+                      ],
+                    };
+                    if (option["品类" + curBehavior]) {
+                      option["品类" + curBehavior + index] = optionValue;
+                    } else {
+                      option["品类" + curBehavior] = optionValue;
+                    }
+                  });
+                  // option["品类" + data[i]["行为"]] = {
+                  //   days: data[i]["圈选天数"],
+                  //   cate: [data[i]["圈选品类"]],
+                  // };
+                }
+                // 浏览、加购、付款
+                if (data[i]["圈选商品"].length > 0) {
+                  console.log("商品标签--->111", data[i]["圈选商品"]);
+                  let skuData = data[i]["圈选商品"];
+                  skuData.forEach((sku, index) => {
+                    let curSku = sku;
+                    let curBehavior = behavior;
+
+                    let count = data[i]["比较数值"];
+                    let lastSku = curSku[curSku.length - 1];
+                    console.log("跨标签维度--->lastSku", lastSku);
+                    // 自定义次数
+                    if (curSku[curSku.length - 1].includes(">")) {
+                      count = curSku[curSku.length - 1].split(">")[1];
+                      lastSku = curSku[curSku.length - 1].split(">")[0];
+                    }
+                    // 跨标签维度
+                    if (sku.join(",").includes("-")) {
+                      curSku = sku.join(",").split("-")[0].split(",");
+                      curBehavior = sku.join(",").split("-")[1];
+                      lastSku = curSku[curSku.length - 1];
+                      console.log("跨标签维度--->curSku", curSku, curBehavior);
+                    }
+                    let optionValue = {
+                      days: data[i]["圈选天数"],
+                      counts: count,
+                      logic: data[i]["比较方式"],
+                      spacer: data[i]["填空商品"],
+                      sku: [
+                        ...[...new Set(curSku)]
+                        .filter((item) => item)
+                        .filter((item, index, arr) => index !== arr.length - 1),
+                        lastSku,
+                      ], //排重
+                    };
+                    if (option[curBehavior]) {
+                      option[curBehavior + index] = optionValue;
+                    } else {
+                      option[curBehavior] = optionValue;
+                    }
+                  });
+                  // 排除自己
+                  exsku = skuData.flat(Infinity);
+                }
+                // 实时标签
+                if (data[i]["实时标签"] && data[i]["实时标签"].length > 0) {
+                  console.log("实时标签--->222", data[i]["实时标签"]);
+                  let realTimeLabelArr = data[i]["实时标签"]
+                    .filter((item) => item)
+                    .map((item) => {
+                      if (item.includes(">")) {
+                        return item.replace(">", "|&|");
+                      }
+                      return item;
+                    });
+                  realTimeLabelArr.forEach((item, index) => {
+                    let realTimeLabelItem = item.split("|");
+                    if (option[realTimeLabelItem[0]]) {
+                      option[realTimeLabelItem[0] + index] = realTimeLabelItem;
+                    } else {
+                      option[realTimeLabelItem[0]] = realTimeLabelItem;
+                    }
+                  });
+                }
+
+                // 排除竞品
+                if (data[i]["竞品"]) {
+                  exsku = exsku.concat(data[i]["竞品"]);
+                }
+
+                console.log("tempJp---->", tempJp);
+                // let jpData = tempJp && tempJp.filter(item=>item["品类"] === data[i]["品类"])
+                let jpData = jp && jp[data[i]["品类"]];
+                console.log("jpData---->", jpData);
+                if (jp && jpData) {
+                  if (jpData["SKU"].length > 0) {
+                    // SKU竞品
+                    exsku = exsku.concat(jp[data[i]["品类"]]["SKU"]);
+                  }
+                }
+
+                console.log("options----00>", option);
+                // 排除标签
+                if (tempJp) {
+                  // 执行表与竞品分析表品类对应上
+                  var tempJpCateData = tempJp.filter(
+                    (item) => item["品类"] === data[i]["品类"]
+                  );
+                  console.log("tempJpCateData---->", tempJpCateData);
+                  let newTempJpCateData = [];
+                  // 如果竞品分析中，品类类型是 付款|浏览|加购 格式，则需遍历
+                  tempJpCateData.forEach((item, index) => {
+                    let categoryType = item["品类类型"].split("|");
+                    if (categoryType.length > 1) {
+                      categoryType.forEach((type) => {
+                        newTempJpCateData.push({
+                          ...item,
+                          品类类型: type,
+                        });
+                      });
+                    } else {
+                      newTempJpCateData.push(item);
+                    }
+                  });
+                  console.log("newTempJpCateData---->", newTempJpCateData);
+                  newTempJpCateData.forEach((item, index) => {
+                    if (!item["SKU"]) return;
+                    let days = item["天数"] || data[i]["排除已购天数"];
+                    // 如果浏览类型-天数大于30
+                    if (
+                      item["品类类型"].includes("浏览") &&
+                      !EXCLUDE_DAYS_LIU_LAN.includes(days)
+                    ) {
+                      days = data[i]["排除已购天数"];
+                    }
+                    let optionValue = {};
+                    if (item["品类类型"].includes("实时")) {
+                      optionValue = [];
+                      optionValue[0] = item["品类类型"];
+                      optionValue[1] = item["天数"].replace("~", ",");
+                      optionValue[2] = item["SKU"];
+                      optionValue[3] = "-";
+                      optionValue[4] = item["次数"];
+                    } else if (item["品类类型"].includes("店铺")) {
+                      // 本店铺加购、浏览、付款
+                      if (item["SKU"] === "本店铺") {
+                        optionValue = {
+                          days: item["天数"],
+                          counts: item["次数"] || data[i]["比较数值"] || 1,
+                          logic: data[i]["比较方式"],
+                          shop: ["1"],
+                          diff: true,
+                        };
+                      } else {
+                        // 店铺加购、浏览、付款
+                        optionValue = {
+                          days: item["天数"],
+                          counts: item["次数"] || data[i]["比较数值"] || 1,
+                          logic: data[i]["比较方式"],
+                          shop: [...new Set(item["SKU"].split(","))]
+                            .filter((item) => item)
+                            .map((item) => item.trim()),
+                          diff: true,
+                        };
+                      }
+                    } else if (item["品类类型"] === "搜索") {
+                      // 搜索标签
+                      optionValue = {
+                        days: days,
+                        keywords: item["SKU"].split(","),
+                        diff: true,
+                        counts: item["次数"] || data[i]["比较数值"] || 1,
+                      };
+                    } else if (isSku(item["SKU"])) {
+                      // SKU 相关
+                      optionValue = {
+                        days: days,
+                        sku: [...new Set(item["SKU"].split(","))]
+                          .filter((item) => item)
+                          .map((item) => item.trim()), //排重
+                        diff: true,
+                        counts: item["次数"] || data[i]["比较数值"] || 1,
+                      };
+                    } else {
+                      // 品类竞品
+                      optionValue = {
+                        days: days,
+                        cate: item["SKU"],
+                        diff: true,
+                        counts: item["次数"] || data[i]["比较数值"] || 1,
+                      };
+                    }
+                    let type = item["品类类型"];
+                    // 如果品类类型存在，则key值+1，因为存在天数维度不同的原因
+                    if (option[type + "1"]) {
+                      option[type + (index + 1 + 1)] = optionValue;
+                    } else {
+                      option[type + "1"] = optionValue;
+                    }
+                  });
+                }
+                console.log("options----11>", option);
+
+                // 搜索关键词
+                if (data[i]["关键词"] && data[i]["关键词"].length > 0) {
+                  if (data[i]["行为"] != "搜索" && !data[i]["搜索天数"]) {
+                    data[i]["搜索天数"] = data[i]["圈选天数"];
+                  }
+                  if (data[i]["搜索天数"] == 1) {
+                    alert("无1日搜索");
+                    $("#pincount_" + i).text("无1日搜索");
+                    options[i] = undefined;
+                    continue;
+                  }
+                  option["搜索"] = {
+                    days: data[i]["行为"] == "搜索" ?
+                      data[i]["圈选天数"] : data[i]["搜索天数"],
+                    keywords: data[i]["关键词"],
+                  };
+                }
+
+                // 已触达标签（对应表格中的排除任务）
+                if (data[i]["排除任务"] && data[i]["排除任务"].length > 0) {
+                  option["排除任务"] = data[i]["排除任务"];
+                }
+
+                if (data[i]["人群画像"]) {
+                  if (!tags || !tags.hasOwnProperty(data[i]["人群画像"])) {
+                    alert("无人群画像【" + data[i]["人群画像"] + "】");
+                    $("#pincount_" + i).text("无人群画像");
                     $("#pincount_" + i)
                       .parent()
                       .addClass("error");
                     return;
                   }
-                  $("#pincount_" + i).text(res.data);
-                  $("#pincount_" + i)
-                    .parent()
-                    .addClass("ok");
-                });
-                if (!res.ok) {
-                  $("#pincount_" + i).text(res.msg);
-                  $("#pincount_" + i)
-                    .parent()
-                    .addClass("error");
+                  $.extend(option, tags[data[i]["人群画像"]]);
                 }
-                console.log("RES" + i, res);
-              }, (i + 1) * ADD_TASK_TIMER);
-            })(i);
+                // options.push(option);
+
+                console.log("options----22>", option);
+                options[i] = option;
+              }
+
+              // return;
+              console.log("人群包名称1--->", options, data, is_check);
+              // console.log('stop-->停止')
+              // return
+              if (is_check) {
+                // 查询默认执行
+                for (i = 0; i < options.length; i++) {
+                  if (options[i] == undefined) {
+                    continue;
+                  }
+                  (function (i) {
+                    var t = 12500;
+                    if (options.length <= 10) {
+                      t = 10000;
+                    }
+
+                    setTimeout(function () {
+                      getPinCount({
+                          ...options[i],
+                          data: data[i],
+                          number: i,
+                        },
+                        function (res) {
+                          if (res.state == "FAILURE" || res.state == "ERROR") {
+                            $("#pincount_" + i).text(res.result);
+                            $("#pincount_" + i)
+                              .parent()
+                              .addClass("error");
+                            return;
+                          }
+                          $("#pincount_" + i).text(res.data);
+                          if (res.data) {
+                            data[i]["pincount"] = parseInt(res.data);
+                          }
+                          if (res.id) {
+                            data[i]["crowdId"] = parseInt(res.id);
+                          }
+                        }
+                      );
+                    }, (i + 1) * t);
+                  })(i);
+                }
+              }
+              // 执行投放
+              $("#xzh-btn-multi-execute").bind("click", function () {
+                var sms_template_id = $("#sms_template_id").val();
+                var exclude_task_id = $("#xzh-exclude-task").val();
+
+                for (i = 0; i < options.length; i++) {
+                  // 增加一键重投
+                  if (
+                    options[i] == undefined ||
+                    $("#pincount_" + i)
+                    .parent()
+                    .hasClass("ok")
+                  ) {
+                    continue;
+                  }
+                  if (
+                    $("#pincount_" + i)
+                    .parent()
+                    .hasClass("error")
+                  ) {
+                    $("#pincount_" + i)
+                      .parent()
+                      .removeClass("error");
+                    $("#pincount_" + i).text("重新投放");
+                  }
+                  (function (i) {
+                    var t = ADD_TASK_TIMER;
+                    if (options.length <= 3) {
+                      t = ADD_TASK_LESS_THAN_3_TIMER;
+                    }
+
+                    setTimeout(function () {
+                      console.log(
+                        "这是第" +
+                        (i + 1) +
+                        "个任务，时间为：" +
+                        moment().format("YYYY-MM-DD HH:mm:ss")
+                      );
+                      if (
+                        exclude_task_id &&
+                        exclude_task_id.length > 0 &&
+                        !data[i]["排除任务"].length
+                      ) {
+                        data[i]["排除任务"] = exclude_task_id.split(",");
+                      }
+                      var res = addTask(
+                        data[i],
+                        options[i],
+                        i,
+                        data.length,
+                        function (res) {
+                          if (res.state == "FAILURE" || res.state == "ERROR") {
+                            $("#pincount_" + i).text(res.result);
+                            $("#pincount_" + i)
+                              .parent()
+                              .addClass("error");
+                            $("#xzh-btn-multi-execute").show();
+                            $("#xzh-btn-multi-execute span").text("失败重投");
+                            return;
+                          }
+                          $("#pincount_" + i).text(res.data);
+                          $("#pincount_" + i)
+                            .parent()
+                            .addClass("ok");
+                          // 回传数据
+                          var res_data = $.parseJSON(this.data);
+                          console.log(this.data);
+                        }
+                      );
+                      if (!res.ok) {
+                        $("#pincount_" + i).text(res.msg);
+                        $("#pincount_" + i)
+                          .parent()
+                          .addClass("error");
+                        $("#xzh-btn-multi-execute").show();
+                        $("#xzh-btn-multi-execute span").text("失败重投");
+                      }
+                      console.log("RES" + i, res);
+                    }, (i + 1) * t + 2000);
+                  })(i);
+                }
+                $(this).hide();
+              });
+
+              $("#xzh-btn-multi-linker").bind("click", function () {
+                convertUrls(data);
+                $(this).remove();
+                setTimeout(function () {
+                  $("#xzh-btn-multi-execute").show();
+                }, convert_url * 500);
+              });
+            }
+          );
+        }
+
+        // 保存数据
+        $("#xzh-jp-list").bind("input propertychange", function () {
+          var val = $("#xzh-jp-list").val();
+          var key = "xzh_jp_" + pin;
+          if (val.length == 0) {
+            localStorage.removeItem(key);
+          } else {
+            localStorage.setItem(key, val);
           }
-          $(this).remove();
         });
-      });
-    }
-
-    // 保存数据
-    $("#xzh-jp-list").bind("input propertychange", function () {
-      var val = $("#xzh-jp-list").val();
-      var key = "xzh_jp_" + pin;
-      if (val.length == 0) {
-        localStorage.removeItem(key);
-      } else {
-        localStorage.setItem(key, val);
-      }
-    });
-    $("#xzh-tag-list").bind("input propertychange", function () {
-      var val = $("#xzh-tag-list").val();
-      var key = "xzh_tag_" + pin;
-      if (val.length == 0) {
-        localStorage.removeItem(key);
-      } else {
-        localStorage.setItem(key, val);
-      }
-    });
-
-    // 获取短信ID
-    $("a.link__1hhMI:contains('使用')").bind("click", function () {
-      $("#sms_template_id").val(
-        $(this).parent().parent("[data-row-key]").data("row-key")
-      );
-    });
-  }
-
-  // 批量删除人群包
-  if (
-    $("#rc-tabs-0-panel-crowd_list").length > 0 &&
-    $("#xzh-btn-one-click-clear").length == 0
-  ) {
-    $(".button-wrapper__M8J0Q")
-      // .eq(1)
-      .append(
-        `<button id="xzh-btn-one-click-clear" type="button" class="ant-btn css-r3n9ey ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>一键清除</span></button>`
-      );
-
-    $("#xzh-btn-one-click-clear").bind("click", function () {
-      var sHtml = `<style>
-      #tablist ul,#tablist li{list-style:none}#tablist ul{overflow:hidden}#tablist li{float:left;color:#333;padding:4px 40px;margin-right:8px;cursor:pointer;border:1px solid #ccc;transition:all ease .3s}.box{width:88%;margin:8px;position:relative}#tablist li:hover{background:#44ac55;color:#fff}#tablist li.tabin{border:1px solid #079982;background:#079982;color:#fff}.content-box{width:100%;height:180px;background:#eee;position:absolute;left:0;top:30px;overflow:hidden;border:1px solid #079982}.content{clear:both;color:#333;padding:10px;display:none;position:absolute;top:0;left:0}.content-box .contentin{display:block;}.content h1{font-size:18px;margin-bottom:20px;margin-top:20px}.content p{font-size:12px;margin:4px 12px}.content p span.title{font-weight:bold;color:#999}
-      table.data th{padding:0;}table.data tr.total td{background-color:#ffe}table.data tr td.percent{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYGWM4/f/8fwAIywOZbbg6KgAAAABJRU5ErkJggg==);background-repeat:no-repeat;background-size:1px 50%;background-position:center left;background-color:#f3fdf6;}table.data tr td.percent.percent_red{background-color:#ffecee;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYGWP4f/rCfwAJAQOaUJXpYAAAAABJRU5ErkJggg==);}</style>
-
-        <div style="padding:8px">加载第<input id="xzh-data-page-start" style="width:36px;padding:0 2px;text-align:center" class="ant-input" value="1" />到<input id="xzh-data-page" style="width:36px;padding:0 2px;text-align:center" class="ant-input" value="1" />页人群包，
-        <button id="xzh-btn-load-crowd-data" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>立即获取</span></button>
-        <button id="one-click-clear" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>一键清除</span></button></div>
-        <div class="tableWrapper">
-        <table class="data">
-          <tr><th width="5%">#</th><th width="15%">人群包ID</th><th width="25%">人群包名称</th><th width="10%">创建时间</th><th width="10%">操作</th></tr>
-        </table>
-        </div>
-        `;
-      showMasker(sHtml);
-
-      $(".ant-checkbox-wrapper input:checkbox").bind("click", function () {
-        $(this).parent().toggleClass("ant-checkbox-checked");
-      });
-
-      var update_data = {};
-      var newTable = `<table class="data">
-            <tr><th width="5%">#</th><th width="15%">人群包ID</th><th width="25%">人群包名称</th><th width="10%">创建时间</th><th width="10%">操作</th></tr>
-            </table>`;
-      $("#xzh-btn-load-crowd-data").bind("click", function () {
-        $("table.data").remove();
-        $(".tableWrapper").append(newTable);
-        var page = $("#xzh-data-page").val();
-        var start_page = $("#xzh-data-page-start").val();
-        getCrowdDataByPage(page).then((data) => {
-          data = data.result;
-          // 加载数据到页面
-          console.log(data);
-          var sHtml = "";
-          for (var i = (start_page - 1) * 10; i < data.length; i++) {
-            sHtml +=
-              `<tr data-id="` +
-              data[i].id +
-              `">
-            <td>` +
-              (i + 1) +
-              `</td>
-            <td>` +
-              data[i].id +
-              `</td>
-            <td>` +
-              data[i].name +
-              `</td>
-            <td>` +
-              data[i].createTime +
-              `</td>
-            <td><a>取消</a></td></tr>`;
-            update_data[data[i].id] = {
-              id: data[i].id,
-              name: data[i].name,
-            };
+        $("#xzh-tag-list").bind("input propertychange", function () {
+          var val = $("#xzh-tag-list").val();
+          var key = "xzh_tag_" + pin;
+          if (val.length == 0) {
+            localStorage.removeItem(key);
+          } else {
+            localStorage.setItem(key, val);
           }
-          $("table.data").append(sHtml);
-          $("table.data td a").bind("click", function () {
-            var tr = $(this).parent().parent();
-            delete update_data[tr.data("id")];
-            tr.remove();
+        });
+
+        // 获取短信ID
+        $("a.link__1hhMI:contains('使用')").bind("click", function () {
+          $("#sms_template_id").val(
+            $(this).parent().parent("[data-row-key]").data("row-key")
+          );
+        });
+      }
+
+      // 批量删除人群包
+      if (
+        $("#rc-tabs-0-panel-crowd_list").length > 0 &&
+        $("#xzh-btn-one-click-clear").length == 0
+      ) {
+        $(".button-wrapper__M8J0Q")
+          // .eq(1)
+          .append(
+            `<button id="xzh-btn-one-click-clear" type="button" class="ant-btn css-r3n9ey ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>一键清除</span></button>`
+          );
+
+        $("#xzh-btn-one-click-clear").bind("click", function () {
+          var sHtml = `<style>
+          #tablist ul,#tablist li{list-style:none}#tablist ul{overflow:hidden}#tablist li{float:left;color:#333;padding:4px 40px;margin-right:8px;cursor:pointer;border:1px solid #ccc;transition:all ease .3s}.box{width:88%;margin:8px;position:relative}#tablist li:hover{background:#44ac55;color:#fff}#tablist li.tabin{border:1px solid #079982;background:#079982;color:#fff}.content-box{width:100%;height:180px;background:#eee;position:absolute;left:0;top:30px;overflow:hidden;border:1px solid #079982}.content{clear:both;color:#333;padding:10px;display:none;position:absolute;top:0;left:0}.content-box .contentin{display:block;}.content h1{font-size:18px;margin-bottom:20px;margin-top:20px}.content p{font-size:12px;margin:4px 12px}.content p span.title{font-weight:bold;color:#999}
+          table.data th{padding:0;}table.data tr.total td{background-color:#ffe}table.data tr td.percent{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYGWM4/f/8fwAIywOZbbg6KgAAAABJRU5ErkJggg==);background-repeat:no-repeat;background-size:1px 50%;background-position:center left;background-color:#f3fdf6;}table.data tr td.percent.percent_red{background-color:#ffecee;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYGWP4f/rCfwAJAQOaUJXpYAAAAABJRU5ErkJggg==);}</style>
+    
+            <div style="padding:8px">加载第<input id="xzh-data-page-start" style="width:36px;padding:0 2px;text-align:center" class="ant-input" value="1" />到<input id="xzh-data-page" style="width:36px;padding:0 2px;text-align:center" class="ant-input" value="1" />页人群包，
+            <button id="xzh-btn-load-crowd-data" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>立即获取</span></button>
+            <button id="one-click-clear" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>一键清除</span></button></div>
+            <div class="tableWrapper">
+            <table class="data">
+              <tr><th width="5%">#</th><th width="15%">人群包ID</th><th width="25%">人群包名称</th><th width="10%">创建时间</th><th width="10%">操作</th></tr>
+            </table>
+            </div>
+            `;
+          showMasker(sHtml);
+
+          $(".ant-checkbox-wrapper input:checkbox").bind("click", function () {
+            $(this).parent().toggleClass("ant-checkbox-checked");
           });
-        });
-      });
 
-      $("#one-click-clear").bind("click", function () {
-        var crowdIds = [];
-        Object.keys(update_data).forEach((key) => {
-          crowdIds.push(key);
-        });
-        $.ajax({
-          url: "/mkt/api/crowd/delete",
-          type: "POST",
-          dataType: "json",
-          data: JSON.stringify(crowdIds),
-          contentType: "application/json",
-          success: function (res) {
+          var update_data = {};
+          var newTable = `<table class="data">
+                <tr><th width="5%">#</th><th width="15%">人群包ID</th><th width="25%">人群包名称</th><th width="10%">创建时间</th><th width="10%">操作</th></tr>
+                </table>`;
+          $("#xzh-btn-load-crowd-data").bind("click", function () {
             $("table.data").remove();
             $(".tableWrapper").append(newTable);
-          },
+            var page = $("#xzh-data-page").val();
+            var start_page = $("#xzh-data-page-start").val();
+            getCrowdDataByPage(page).then((data) => {
+              data = data.result;
+              // 加载数据到页面
+              console.log(data);
+              var sHtml = "";
+              for (var i = (start_page - 1) * 10; i < data.length; i++) {
+                sHtml +=
+                  `<tr data-id="` +
+                  data[i].id +
+                  `">
+                <td>` +
+                  (i + 1) +
+                  `</td>
+                <td>` +
+                  data[i].id +
+                  `</td>
+                <td>` +
+                  data[i].name +
+                  `</td>
+                <td>` +
+                  data[i].createTime +
+                  `</td>
+                <td><a>取消</a></td></tr>`;
+                update_data[data[i].id] = {
+                  id: data[i].id,
+                  name: data[i].name,
+                };
+              }
+              $("table.data").append(sHtml);
+              $("table.data td a").bind("click", function () {
+                var tr = $(this).parent().parent();
+                delete update_data[tr.data("id")];
+                tr.remove();
+              });
+            });
+          });
+
+          $("#one-click-clear").bind("click", function () {
+            var crowdIds = [];
+            Object.keys(update_data).forEach((key) => {
+              crowdIds.push(key);
+            });
+            $.ajax({
+              url: "/mkt/api/crowd/delete",
+              type: "POST",
+              dataType: "json",
+              data: JSON.stringify(crowdIds),
+              contentType: "application/json",
+              success: function (res) {
+                $("table.data").remove();
+                $(".tableWrapper").append(newTable);
+              },
+            });
+          });
         });
-      });
-    });
+      }
+    }
   }
 });
+
+// 配置 MutationObserver
+const config = {
+  childList: true,
+  attributes: true,
+  subtree: true
+};
+
+// 开始观察目标节点
+observer.observe(targetNode, config);
+
+
+// 批量
+// $("body").bind("DOMCharacterDataModified", function () {
+//   if (
+//     ($(".content__FKDJl").length > 0 &&
+//       $(".channel-chooser__t_JjF").length > 0)
+//   ) {
+//     var multi = $("#dialog-multi");
+//     if (multi.length == 0) {
+//       // 默认值
+//       let xzh_jp_default = localStorage.getItem("xzh_jp_" + pin);
+//       let xzh_tag_default = localStorage.getItem("xzh_tag_" + pin);
+//       xzh_jp_default = xzh_jp_default ? xzh_jp_default : "";
+//       xzh_tag_default = xzh_tag_default ? xzh_tag_default : "";
+
+//       var sHtml =
+//         '<div class="modal__1URM8" id="dialog-multi" style="left:-505px;background:#fff;width:500px;float:right;position:absolute;top:0;z-index:99999"><div class="ant-modal-content">' +
+//         '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0"><div class="title__2CoZR title__QVWfk has-icon__3dNRu"><span class="icon-wrapper__23vff"><span class="item__1SH3J">创建批量任务</span></div></div></div>' +
+//         '<div class="ant-modal-body"><div class="content__34BVq content__UWhFl"><div class="header__1FeKd"></div><div class="main__-PQXV main__WU9uP">' +
+//         '<div class="header-panel__2ZvKo cross-task__1E5P2 xz-vertical-gap header-panel__H2eYO send-content__R2NlL">' +
+//         '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">统一配置项</div></span></div>' +
+//         '<div class="body__2wdPq body__SOXZp">' +
+//         '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+//         '<div class="content__1OYv3">' +
+//         '<input id="xzh-execute-date" style="width:280px" class="ant-input input__2_rbb task__1t_R5" placeholder="执行日期, 如: xxxx/xx/xx, 2022/10/9" type="text" value="">' +
+//         '<input id="xzh-template-date"  style="width:280px" class="ant-input xz-vertical-gap input__2_rbb task__1t_R5" placeholder="文案日期, 如: xxxx/xx/xx, 2022/10/9" type="text" value="">' +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+//         '<div class="content-row__3nMQe">' +
+//         '<div class="content-col__3ruDH">' +
+//         '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">发送上限</div></span></div>' +
+//         '<div class="body__2wdPq  body__SOXZp">' +
+//         '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+//         '<textarea id="send-max" rows="3" class="ant-input"></textarea>' +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+//         '<div class="content-row__3nMQe">' +
+//         '<div class="content-col__3ruDH">' +
+//         '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">批量任务</div></span></div>' +
+//         '<div class="body__2wdPq  body__SOXZp">' +
+//         '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+//         '<textarea id="xzh-task-list" rows="3" class="ant-input"></textarea>' +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+//         '<div class="content-row__3nMQe">' +
+//         '<div class="content-col__3ruDH">' +
+//         '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq"><div class="title__2CoZR title__QVWfk">排除竞品</div></span></div>' +
+//         '<div class="body__2wdPq  body__SOXZp">' +
+//         '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+//         `<textarea id="xzh-jp-list" rows="3" class="ant-input">${xzh_jp_default}</textarea>` +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         '<div class="header-panel__2ZvKo xz-vertical-gap header-panel__H2eYO send-content__2POVc">' +
+//         '<div class="content-row__3nMQe">' +
+//         '<div class="content-col__3ruDH">' +
+//         '<div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">人群画像</div></span></div>' +
+//         '<div class="body__2wdPq  body__SOXZp">' +
+//         '<div class="content-panel__1Q316 content-panel__ju4Hf">' +
+//         `<textarea id="xzh-tag-list" rows="3" class="ant-input">${xzh_tag_default}</textarea>` +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         "</div>" +
+//         '<div class="ant-modal-footer"><input id="sms_template_id" type="hidden" /><button id="xzh-btn-multi-check" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z"><span>批量查询</span></button>' +
+//         '<button id="xzh-btn-multi-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创建任务</span></button>' +
+//         '<button id="xzh-btn-crowd-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创人群包</span></button></div>' +
+//         "</div></div>";
+//       $("div[role='dialog']").append(sHtml);
+
+//       if (!operator.hasOwnProperty(pin)) {
+//         $("#xzh-btn-task-improt").remove();
+//       }
+
+//       // $("#xzh-task-list").bind("tripleclick", function () {
+//       //   importTask();
+//       // });
+
+//       // 导入任务
+//       $("#xzh-btn-task-improt").bind("click", function () {
+//         importTask();
+//       });
+
+//       getUserInfo();
+//       getAiList();
+//       getAllCategory()
+
+
+//       var category = getAllCategory();
+//       // console.log("CATEGORY", category);
+
+//       $("#dialog-multi .content__1OYv3 button.button-size-small__1kSJV").bind(
+//         "click",
+//         function () {
+//           var days = $(this).text();
+//           days = days.substr(0, days.length - 1);
+//           getExcludeTask(days);
+//         }
+//       );
+
+//       // 批量查询、投放
+//       $("#xzh-btn-multi-check,#xzh-btn-multi-submit, #xzh-btn-crowd-submit").bind(
+//         "click",
+//         function () {
+//           var is_check = true;
+//           if ($(this)[0].id == "xzh-btn-multi-submit") {
+//             is_check = false;
+//           }
+//           // console.log(is_check);
+
+//           if ($(this)[0].id == "xzh-btn-crowd-submit") {
+//             is_create_crowd = true;
+//           }
+//           if ($(this)[0].id !== "xzh-btn-crowd-submit") {
+//             is_create_crowd = false;
+//           }
+
+//           if (!is_check) {
+//               // 处理发送上限
+//               const sendMaxData = table($("#send-max").val())[0];
+//               console.log("sendMaxData---->", sendMaxData, typeof sendMaxData);
+
+//               if (!sendMaxData) {
+//                 alert("请设置发送上限！");
+//                 return;
+//               } else {
+//                 sendMaxConfig = {
+//                   ...sendMaxConfig,
+//                   咚咚: Number(sendMaxData["咚咚"]),
+//                   富媒体咚咚: Number(sendMaxData["富媒体咚咚"]),
+//                   短信: Number(sendMaxData["短信"]),
+//                   富媒体短信: Number(sendMaxData["富媒体短信"]),
+//                   // 营销成本: Number(sendMaxData["营销成本"])
+//                 };
+//                 console.log("sendMaxConfig--->", sendMaxConfig);
+//                 if (Object.values(sendMaxConfig).every((value) => !value)) {
+//                   alert("发送上限不能全为空");
+//                   return;
+//                 }
+//                 // if (!sendMaxConfig['营销成本'] || sendMaxConfig['营销成本'] < 0) {
+//                 //   alert("营销成本不能为空且必须大于0");
+//                 //   return;
+//                 // }
+//                 setSendMax();
+//           }
+
+//           }
+//           console.log("当前环境---->", isUat);
+//           // 每次进入投放页面重置人群包id
+//           crowdOptions_ = {};
+
+//           // 处理投放任务
+//           var data = table($("#xzh-task-list").val());
+//           if (!data) {
+//             alert("没有投放数据");
+//             return;
+//           }
+
+//           var search_keyword = 0;
+//           var convert_url = 0;
+
+//           // 人群画像
+//           var tags = getTags();
+//           console.log("TAGS", tags);
+
+//           let executeDate = $("#xzh-execute-date").val();
+//           console.log("executeDate--->日期", executeDate);
+
+//           // 处理投放策略
+//           for (var i = 0; i < data.length; i++) {
+//             if (!data[i].hasOwnProperty("投放策略") || !data[i]["投放策略"]) {
+//               data[i]["error"] = "无投放策略";
+//               continue;
+//             }
+//             // 解析投放策略
+//             var m = data[i]["投放策略"].match(
+//               /^(.+)[\(（](\d+)([<>](\d+))?(?:\/(\d+))?([A-Z]?)-(\d+)(?:-(\d+))?[\)）]$/
+//             );
+//             console.log("m", m);
+//             if (!m) {
+//               data[i]["error"] = "投放策略错误";
+//               continue;
+//             }
+
+//             data[i]["行为"] = m[1].substr(-2);
+//             console.log("行为--->", data[i]["行为"]);
+
+//             data[i]["圈选商品"] = [];
+
+//             const labelType = m[1];
+//             console.log("解析--->标签类型--->labelType", labelType);
+//             const conditionsStr = data[i]["圈选条件"];
+//             console.log("解析--->圈选条件--->conditionsStr", conditionsStr);
+//             const conditionsArr = conditionsStr.split("\n");
+//             console.log("解析--->圈选条件--->conditionsArr", conditionsArr);
+
+//             if (
+//               labelType.length === 4 && ["商品", "竞品", "跨品"].some((item) => labelType.includes(item))
+//             ) {
+//               // 商品标签 1-sku;2-sku;3-关键词;4-品类
+//               console.log("标签类型--->商品标签--->111");
+//               if (conditionsArr[0]) {
+//                 data[i]["圈选商品"] = [explode(conditionsArr[0])];
+//               }
+//               if (conditionsArr[1]) {
+//                 data[i]["圈选商品"] = [
+//                   ...data[i]["圈选商品"],
+//                   explode(conditionsArr[1]),
+//                 ];
+//               }
+//               if (conditionsArr[2]) {
+//                 data[i]["关键词"] = conditionsArr[2];
+//               }
+//               if (conditionsArr[3]) {
+//                 data[i]["圈选品类"] = [explode(conditionsArr[3])];
+//               }
+//             } else if (
+//               ["品牌词", "产品词", "活动词", "竞品词", "行业词"].includes(
+//                 labelType
+//               )
+//             ) {
+//               // 全是关键词
+//               console.log("标签类型--->搜索标签--->222");
+//               data[i]["关键词"] = conditionsArr.join(",");
+//             } else if (
+//               labelType.length === 4 && ["店铺"].some((item) => labelType.includes(item))
+//             ) {
+//               // 店铺标签 1-shopId(1:本店铺);2-shopId(1:本店铺);3-sku;4-关键词;5-品类
+//               console.log("标签类型--->店铺标签--->333");
+//               if (conditionsArr[0]) {
+//                 data[i]["圈选店铺"] = [explode(conditionsArr[0])];
+//               }
+//               if (conditionsArr[1]) {
+//                 data[i]["圈选店铺"] = [
+//                   ...data[i]["圈选店铺"],
+//                   explode(conditionsArr[1]),
+//                 ];
+//               }
+//               if (conditionsArr[2]) {
+//                 data[i]["圈选商品"] = [explode(conditionsArr[2])];
+//               }
+//               if (conditionsArr[3]) {
+//                 data[i]["关键词"] = conditionsArr[3];
+//               }
+//               if (conditionsArr[4]) {
+//                 data[i]["圈选品类"] = [explode(conditionsArr[4])];
+//               }
+//             } else if (
+//               labelType.length === 4 && ["品类"].some((item) => labelType.includes(item))
+//             ) {
+//               console.log("标签类型--->品类标签--->444");
+//               // 1-品类；2-品类；3-关键词
+//               if (conditionsArr[0]) {
+//                 data[i]["圈选品类"] = [explode(conditionsArr[0])];
+//               }
+//               if (conditionsArr[1]) {
+//                 data[i]["圈选品类"] = [
+//                   ...data[i]["圈选品类"],
+//                   explode(conditionsArr[1]),
+//                 ];
+//               }
+//               if (conditionsArr[2]) {
+//                 data[i]["关键词"] = conditionsArr[2];
+//               }
+//             } else if (labelType.includes("实时")) {
+//               // 所有实时标签
+//               console.log(
+//                 "data--->实时任务时间",
+//                 data[i],
+//                 data[i]["实时任务时间"]
+//               );
+//               if (!data[i]["实时任务时间"]) {
+//                 alert("实时标签没有设置时间！");
+//                 return;
+//               }
+//               const tempHourData = data[i]["实时任务时间"].replace("~", ",");
+//               let tempRealTimeLabel = [];
+//               if (["商品", "竞品"].some((item) => labelType.includes(item))) {
+//                 console.log("标签类型--->商品实时标签--->555");
+//                 // 商品实时标签 1-sku;2-sku;3-关键词;4-品类
+//                 if (conditionsArr[0]) {
+//                   tempRealTimeLabel.push(
+//                     `商品实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[0]}`
+//                   );
+//                 }
+//                 if (conditionsArr[1]) {
+//                   tempRealTimeLabel.push(
+//                     `商品实时${data[i]["行为"]}1|${tempHourData}|${conditionsArr[1]}`
+//                   );
+//                 }
+//                 if (conditionsArr[2]) {
+//                   tempRealTimeLabel.push(
+//                     `实时搜索|${tempHourData}|${conditionsArr[2]}`
+//                   );
+//                 }
+//                 if (conditionsArr[3]) {
+//                   tempRealTimeLabel.push(
+//                     `品类实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[3]}`
+//                   );
+//                 }
+//               } else if (labelType === "实时搜索") {
+//                 console.log("标签类型--->实时搜索标签--->666");
+//                 // 商品实时标签 1-关键词;2-关键词;3-关键词;
+//                 if (conditionsArr[0]) {
+//                   tempRealTimeLabel.push(
+//                     `实时搜索|${tempHourData}|${conditionsArr[0]}`
+//                   );
+//                 }
+//                 if (conditionsArr[1]) {
+//                   tempRealTimeLabel.push(
+//                     `实时搜索1|${tempHourData}|${conditionsArr[1]}`
+//                   );
+//                 }
+//                 if (conditionsArr[2]) {
+//                   tempRealTimeLabel.push(
+//                     `实时搜索2|${tempHourData}|${conditionsArr[2]}`
+//                   );
+//                 }
+//               } else if (labelType.includes("店铺")) {
+//                 console.log("标签类型--->店铺实时标签--->777");
+//                 // 商品实时标签 1-shopId;2-shopId;3-sku;4-关键词;5-品类
+//                 if (conditionsArr[0]) {
+//                   tempRealTimeLabel.push(
+//                     `${labelType}|${tempHourData}|${conditionsArr[0]}`
+//                   );
+//                 }
+//                 if (conditionsArr[1]) {
+//                   tempRealTimeLabel.push(
+//                     `${labelType}1|${tempHourData}|${conditionsArr[1]}`
+//                   );
+//                 }
+//                 if (conditionsArr[2]) {
+//                   tempRealTimeLabel.push(
+//                     `商品实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[2]}`
+//                   );
+//                 }
+//                 if (conditionsArr[3]) {
+//                   tempRealTimeLabel.push(
+//                     `实时搜索|${tempHourData}|${conditionsArr[3]}`
+//                   );
+//                 }
+//                 if (conditionsArr[4]) {
+//                   tempRealTimeLabel.push(
+//                     `品类实时${data[i]["行为"]}|${tempHourData}|${conditionsArr[4]}`
+//                   );
+//                 }
+//               } else if (labelType.includes("品类")) {
+//                 console.log("标签类型--->品类实时标签--->888");
+//                 // 商品实时标签 1-品类;2-品类;3-关键词
+//                 if (conditionsArr[0]) {
+//                   tempRealTimeLabel.push(
+//                     `${labelType}|${tempHourData}|${conditionsArr[0]}`
+//                   );
+//                 }
+//                 if (conditionsArr[1]) {
+//                   tempRealTimeLabel.push(
+//                     `${labelType}1|${tempHourData}|${conditionsArr[1]}`
+//                   );
+//                 }
+//                 if (conditionsArr[2]) {
+//                   tempRealTimeLabel.push(
+//                     `实时搜索|${tempHourData}|${conditionsArr[2]}`
+//                   );
+//                 }
+//               }
+//               console.log("实时标签--->tempRealTimeLabel", tempRealTimeLabel);
+//               data[i]["实时标签"] = tempRealTimeLabel;
+//             }
+
+//             let launchDate = executeDate || data[i]["执行日期"] || "";
+//             console.log("launchDate--->", launchDate);
+
+//             data[i]["圈选天数"] = m[2];
+//             data[i]["比较方式"] = m[3] == "<" ? "lte" : "gte";
+//             data[i]["比较数值"] = m[4] ? m[4] : 1;
+//             data[i]["搜索天数"] = m[5] ? m[5] : m[2];
+//             data[i]["人群画像"] = m[6];
+//             data[i]["排除已购天数"] = m[7];
+//             data[i]["排除已触达天数"] = m[8];
+//             // data[i]["圈选商品"] = explode(data[i]["圈选商品"]);
+//             data[i]["关键词"] = explode(data[i]["关键词"]);
+//             data[i]["投放日期"] =
+//               launchDate && data[i]["投放时间"] ?
+//               new Date(launchDate + " " + data[i]["投放时间"]) :
+//               null;
+//             data[i]["预估人数"] = data[i]["预估人数"] ?
+//               parseInt(data[i]["预估人数"]) :
+//               0;
+//             data[i]["排除任务"] = explode(data[i]["排除任务"]);
+//             data[i]["填空商品"] = explode(data[i]["空商品"]);
+
+//             if (!isSku(data[i]["竞品"])) {
+//               search_keyword++;
+//               data[i]["竞品搜索"] = explode(data[i]["竞品"]);
+//               data[i]["竞品"] = null;
+//             }
+
+//             data[i]["竞品"] = explode(data[i]["竞品"]);
+
+//             // if (
+//             //   data[i]["投放渠道"] == "咚咚" &&
+//             //   data[i]["文案内容"] &&
+//             //   data[i]["文案内容"].indexOf("http") < 0 &&
+//             //   data[i]["文案内容"].indexOf("jd.com") < 0 &&
+//             //   data[i]["文案内容"].indexOf("3.cn") < 0
+//             // ) {
+//             //   data[i]["文案转链"] = true;
+//             //   convert_url++;
+//             // }
+
+//             // if (data[i]["投放渠道"] == "短信") {
+//             //   data[i]["文案内容"] = null;
+//             // }
+//           }
+//           console.log("DATA", data);
+
+//           // 处理竞品
+//           var jp = table($("#xzh-jp-list").val());
+//           console.log("处理竞品---->11", jp);
+//           var tempJp = jp;
+//           if (jp) {
+//             var arr = [];
+//             for (i in jp) {
+//               // 竞品数据
+//               if (!jp[i]["SKU"] || !jp[i]["品类"]) continue;
+//               if (!arr.hasOwnProperty(jp[i]["品类"])) {
+//                 arr[jp[i]["品类"]] = {
+//                   SKU: [],
+//                   品类: [],
+//                   店铺: [],
+//                   品类类型: jp[i]["品类类型"],
+//                   天数: jp[i]["天数"],
+//                 };
+//               }
+
+//               // 处理单品、品类
+//               if (isSku(jp[i]["SKU"])) {
+//                 arr[jp[i]["品类"]]["SKU"].push.apply(
+//                   arr[jp[i]["品类"]]["SKU"],
+//                   explode(jp[i]["SKU"])
+//                 );
+//               } else {
+//                 // 排除本店铺 加购、浏览、付款
+//                 if (jp[i]["SKU"].includes("店铺")) {
+//                   arr[jp[i]["品类"]]["品类"].push.apply(
+//                     arr[jp[i]["品类"]]["店铺"],
+//                     explode(jp[i]["SKU"]),
+//                     "\\n"
+//                   );
+//                 } else {
+//                   arr[jp[i]["品类"]]["品类"].push.apply(
+//                     arr[jp[i]["品类"]]["品类"],
+//                     explode(jp[i]["SKU"]),
+//                     "\\n"
+//                   );
+//                 }
+//               }
+//             }
+//             jp = arr;
+//           }
+//           console.log("竞品", jp);
+
+//           var sHtml = '';
+//           if (is_create_crowd) {
+//             sHtml = '<table id="crowdTable" class="data"><tr><th style="width:5%">#</th><th style="width:50%">人群包名称</th><th style="width:45%">创建状态</th></tr>';
+//             for (i = 0; i < data.length; i++) {
+//               var uatName = (data[i] && data[i]["人群包名称"]) || `测试-${moment().format("HH:mm:ss")}`
+//               var name = isUat
+//               ? uatName
+//               : (data["data"] && data["data"]["人群包名称"]) ||
+//                 (data["data"] && data["data"]["任务名"]) ||
+//                 `预估人数-${moment().format("HH:mm:ss")}`;
+
+//               console.log('table  uatName', uatName)
+//               console.log('table  name', name)
+
+//               sHtml +=
+//               "<tr><td>" +
+//               (i + 1) +
+//               "</td><td>" +
+//               name +
+//               '</td><td><span class="createStatus">未创建</span></td></tr>';
+//             }
+//           } else { 
+//             sHtml =
+//             '<table class="data"><tr><th style="width:5%">#</th><th style="width:25%">投放策略</th><th style="width:55%">SKU</th><th style="width:5%">竞品</th><th style="width:10%">' +
+//             (is_check ? "用户数" : "投放状态") +
+//             "</th></tr>";
+//           for (i = 0; i < data.length; i++) {
+//             var exsku_num = data[i]["竞品"] ? data[i]["竞品"].length : 0;
+//             if (jp && jp.hasOwnProperty(data[i]["品类"])) {
+//               exsku_num += jp[data[i]["品类"]]["SKU"] ? [...new Set(jp[data[i]["品类"]]["SKU"])].filter(
+//                   (item) => item
+//                 ).length :
+//                 0;
+//             }
+//             var skuid = data[i]["圈选商品"]
+//               .map(
+//                 (item) =>
+//                 '<a href="https://item.jd.com/' +
+//                 item +
+//                 '.html" target="_blank">' +
+//                 item +
+//                 "</a>"
+//               )
+//               .join(",");
+//             if (data[i]["关键词"]) {
+//               if (skuid.length > 0) skuid += "<br />";
+//               skuid += data[i]["关键词"];
+//             }
+//             if (data[i]["文案转链"]) {
+//               skuid +=
+//                 '<p id="xzh-content-' + i + '">' + data[i]["文案内容"] + "</p>";
+//             }
+//             var channel = "";
+//             if (data[i]["投放渠道"] && !is_check) {
+//               channel =
+//                 '<span class="' +
+//                 (data[i]["投放渠道"] == "短信" ?
+//                   "xzh-label-dx" :
+//                   "xzh-label-dd") +
+//                 '">' +
+//                 data[i]["投放渠道"] +
+//                 "</span>";
+//             }
+//             var title = data[i]["投放策略"];
+//             // console.log(skuid);
+//             if (data[i]["任务名"]) {
+//               title =
+//                 "<strong>" +
+//                 data[i]["任务名"] +
+//                 "</strong>" +
+//                 channel +
+//                 "<br />" +
+//                 title;
+//             } else {
+//               title += channel;
+//             }
+//             sHtml +=
+//               "<tr><td>" +
+//               (i + 1) +
+//               "</td><td>" +
+//               title +
+//               '</td><td class="xz-word-break">' +
+//               skuid +
+//               "</td><td>" +
+//               exsku_num +
+//               '</td><td id="pincount_' +
+//               i +
+//               '"' +
+//               (data[i]["投放渠道"] == "短信" ?
+//                 ' class="sms_' + data[i]["文案"] + '"' :
+//                 "") +
+//               ">" +
+//               (is_check ?
+//                 "计算中" :
+//                 data[i]["文案转链"] ?
+//                 '<span class="xzh-label-red" id="xzh-content-status-' +
+//                 i +
+//                 '">等待转链</span>' :
+//                 "等待投放") +
+//               "</td></tr>";
+//             }
+//           }
+//           // sHtml += '<tfoot><tr><td colspan="4">排除竞品：'+jp.length+'个</td></tr></tfoot>';
+//           sHtml += "</table>";
+//           var btnName = is_create_crowd ? '立即创建' : '立即投放' 
+
+//             sHtml +=
+//             '<button id="xzh-btn-multi-linker" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-large"><span>转链</span></button>';
+//             sHtml +=
+//               '<button id="xzh-btn-multi-execute" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green xzh-btn-large"><span>' + btnName + '</span></button>';
+
+//           showMasker(sHtml);
+
+//           if (convert_url > 0) {
+//             $("#xzh-btn-multi-execute").hide();
+//           } else {
+//             $("#xzh-btn-multi-linker").remove();
+//           }
+
+//           // 生成条件
+//           var options = [];
+//           var sms_check = [];
+//           for (i = 0; i < data.length; i++) {
+//             console.log("生成条件--->", data[i]);
+//             var option = {};
+//             var exsku = [];
+
+//             const behavior = data[i]["行为"];
+//             // 店铺浏览、加购、付款
+//             if (data[i]["圈选店铺"] && data[i]["圈选店铺"].length > 0) {
+//               console.log("店铺标签--->111", data[i]["圈选店铺"]);
+//               let shopIdData = data[i]["圈选店铺"];
+//               console.log("店铺标签--->shopIdData", shopIdData);
+//               shopIdData.forEach((shopId, index) => {
+//                 let count = data[i]["比较数值"];
+//                 let lastShopId = shopId[shopId.length - 1];
+//                 // 自定义次数
+//                 if (shopId[shopId.length - 1].includes(">")) {
+//                   count = shopId[shopId.length - 1].split(">")[1];
+//                   lastShopId = shopId[shopId.length - 1].split(">")[0];
+//                 }
+//                 let optionValue = {
+//                   days: data[i]["圈选天数"],
+//                   counts: count,
+//                   logic: data[i]["比较方式"],
+//                   shop: [
+//                     ...shopId.filter(
+//                       (item, index) => index !== shopId.length - 1
+//                     ),
+//                     lastShopId,
+//                   ],
+//                 };
+//                 if (option["店铺" + behavior]) {
+//                   option["店铺" + behavior + index] = optionValue;
+//                 } else {
+//                   option["店铺" + behavior] = optionValue;
+//                 }
+//               });
+//             }
+//             // 品类浏览、加购、付款
+//             if (data[i]["圈选品类"] && data[i]["圈选品类"].length > 0) {
+//               let cateData = data[i]["圈选品类"];
+//               console.log("品类标签--->cateData", cateData);
+//               cateData.forEach((cate, index) => {
+//                 let curCate = cate;
+//                 let curBehavior = behavior;
+
+//                 let count = data[i]["比较数值"];
+//                 let lastCate = curCate[curCate.length - 1];
+//                 // 自定义次数
+//                 if (curCate[curCate.length - 1].includes(">")) {
+//                   count = curCate[curCate.length - 1].split(">")[1];
+//                   lastCate = curCate[curCate.length - 1].split(">")[0];
+//                 }
+//                 // 跨标签维度
+//                 if (curCate.join(",").includes("-")) {
+//                   curCate = cate.join(",").split("-")[0].split(",");
+//                   curBehavior = cate.join(",").split("-")[1];
+//                   lastCate = curCate[curCate.length - 1];
+//                 }
+//                 let optionValue = {
+//                   days: data[i]["圈选天数"],
+//                   counts: count,
+//                   cate: [
+//                     ...curCate.filter(
+//                       (item, index, arr) => index !== arr.length - 1
+//                     ),
+//                     lastCate,
+//                   ],
+//                 };
+//                 if (option["品类" + curBehavior]) {
+//                   option["品类" + curBehavior + index] = optionValue;
+//                 } else {
+//                   option["品类" + curBehavior] = optionValue;
+//                 }
+//               });
+//               // option["品类" + data[i]["行为"]] = {
+//               //   days: data[i]["圈选天数"],
+//               //   cate: [data[i]["圈选品类"]],
+//               // };
+//             }
+//             // 浏览、加购、付款
+//             if (data[i]["圈选商品"].length > 0) {
+//               console.log("商品标签--->111", data[i]["圈选商品"]);
+//               let skuData = data[i]["圈选商品"];
+//               skuData.forEach((sku, index) => {
+//                 let curSku = sku;
+//                 let curBehavior = behavior;
+
+//                 let count = data[i]["比较数值"];
+//                 let lastSku = curSku[curSku.length - 1];
+//                 console.log("跨标签维度--->lastSku", lastSku);
+//                 // 自定义次数
+//                 if (curSku[curSku.length - 1].includes(">")) {
+//                   count = curSku[curSku.length - 1].split(">")[1];
+//                   lastSku = curSku[curSku.length - 1].split(">")[0];
+//                 }
+//                 // 跨标签维度
+//                 if (sku.join(",").includes("-")) {
+//                   curSku = sku.join(",").split("-")[0].split(",");
+//                   curBehavior = sku.join(",").split("-")[1];
+//                   lastSku = curSku[curSku.length - 1];
+//                   console.log("跨标签维度--->curSku", curSku, curBehavior);
+//                 }
+//                 let optionValue = {
+//                   days: data[i]["圈选天数"],
+//                   counts: count,
+//                   logic: data[i]["比较方式"],
+//                   spacer: data[i]["填空商品"],
+//                   sku: [
+//                     ...[...new Set(curSku)]
+//                     .filter((item) => item)
+//                     .filter((item, index, arr) => index !== arr.length - 1),
+//                     lastSku,
+//                   ], //排重
+//                 };
+//                 if (option[curBehavior]) {
+//                   option[curBehavior + index] = optionValue;
+//                 } else {
+//                   option[curBehavior] = optionValue;
+//                 }
+//               });
+//               // 排除自己
+//               exsku = skuData.flat(Infinity);
+//             }
+//             // 实时标签
+//             if (data[i]["实时标签"] && data[i]["实时标签"].length > 0) {
+//               console.log("实时标签--->222", data[i]["实时标签"]);
+//               let realTimeLabelArr = data[i]["实时标签"]
+//                 .filter((item) => item)
+//                 .map((item) => {
+//                   if (item.includes(">")) {
+//                     return item.replace(">", "|&|");
+//                   }
+//                   return item;
+//                 });
+//               realTimeLabelArr.forEach((item, index) => {
+//                 let realTimeLabelItem = item.split("|");
+//                 if (option[realTimeLabelItem[0]]) {
+//                   option[realTimeLabelItem[0] + index] = realTimeLabelItem;
+//                 } else {
+//                   option[realTimeLabelItem[0]] = realTimeLabelItem;
+//                 }
+//               });
+//             }
+
+//             // 排除竞品
+//             if (data[i]["竞品"]) {
+//               exsku = exsku.concat(data[i]["竞品"]);
+//             }
+
+//             console.log("tempJp---->", tempJp);
+//             // let jpData = tempJp && tempJp.filter(item=>item["品类"] === data[i]["品类"])
+//             let jpData = jp && jp[data[i]["品类"]];
+//             console.log("jpData---->", jpData);
+//             if (jp && jpData) {
+//               if (jpData["SKU"].length > 0) {
+//                 // SKU竞品
+//                 exsku = exsku.concat(jp[data[i]["品类"]]["SKU"]);
+//               }
+//             }
+
+//             console.log("options----00>", option);
+//             // 排除标签
+//             if (tempJp) {
+//               // 执行表与竞品分析表品类对应上
+//               var tempJpCateData = tempJp.filter(
+//                 (item) => item["品类"] === data[i]["品类"]
+//               );
+//               console.log("tempJpCateData---->", tempJpCateData);
+//               let newTempJpCateData = [];
+//               // 如果竞品分析中，品类类型是 付款|浏览|加购 格式，则需遍历
+//               tempJpCateData.forEach((item, index) => {
+//                 let categoryType = item["品类类型"].split("|");
+//                 if (categoryType.length > 1) {
+//                   categoryType.forEach((type) => {
+//                     newTempJpCateData.push({
+//                       ...item,
+//                       品类类型: type,
+//                     });
+//                   });
+//                 } else {
+//                   newTempJpCateData.push(item);
+//                 }
+//               });
+//               console.log("newTempJpCateData---->", newTempJpCateData);
+//               newTempJpCateData.forEach((item, index) => {
+//                 if (!item["SKU"]) return;
+//                 let days = item["天数"] || data[i]["排除已购天数"];
+//                 // 如果浏览类型-天数大于30
+//                 if (
+//                   item["品类类型"].includes("浏览") &&
+//                   !EXCLUDE_DAYS_LIU_LAN.includes(days)
+//                 ) {
+//                   days = data[i]["排除已购天数"];
+//                 }
+//                 let optionValue = {};
+//                 if (item["品类类型"].includes("实时")) {
+//                   optionValue = [];
+//                   optionValue[0] = item["品类类型"];
+//                   optionValue[1] = item["天数"].replace("~", ",");
+//                   optionValue[2] = item["SKU"];
+//                   optionValue[3] = "-";
+//                   optionValue[4] = item["次数"];
+//                 } else if (item["品类类型"].includes("店铺")) {
+//                   // 本店铺加购、浏览、付款
+//                   if (item["SKU"] === "本店铺") {
+//                     optionValue = {
+//                       days: item["天数"],
+//                       counts: item["次数"] || data[i]["比较数值"] || 1,
+//                       logic: data[i]["比较方式"],
+//                       shop: ["1"],
+//                       diff: true,
+//                     };
+//                   } else {
+//                     // 店铺加购、浏览、付款
+//                     optionValue = {
+//                       days: item["天数"],
+//                       counts: item["次数"] || data[i]["比较数值"] || 1,
+//                       logic: data[i]["比较方式"],
+//                       shop: [...new Set(item["SKU"].split(","))]
+//                         .filter((item) => item)
+//                         .map((item) => item.trim()),
+//                       diff: true,
+//                     };
+//                   }
+//                 } else if (item["品类类型"] === "搜索") {
+//                   // 搜索标签
+//                   optionValue = {
+//                     days: days,
+//                     keywords: item["SKU"].split(","),
+//                     diff: true,
+//                     counts: item["次数"] || data[i]["比较数值"] || 1,
+//                   };
+//                 } else if (isSku(item["SKU"])) {
+//                   // SKU 相关
+//                   optionValue = {
+//                     days: days,
+//                     sku: [...new Set(item["SKU"].split(","))]
+//                       .filter((item) => item)
+//                       .map((item) => item.trim()), //排重
+//                     diff: true,
+//                     counts: item["次数"] || data[i]["比较数值"] || 1,
+//                   };
+//                 } else {
+//                   // 品类竞品
+//                   optionValue = {
+//                     days: days,
+//                     cate: item["SKU"],
+//                     diff: true,
+//                     counts: item["次数"] || data[i]["比较数值"] || 1,
+//                   };
+//                 }
+//                 let type = item["品类类型"];
+//                 // 如果品类类型存在，则key值+1，因为存在天数维度不同的原因
+//                 if (option[type + "1"]) {
+//                   option[type + (index + 1 + 1)] = optionValue;
+//                 } else {
+//                   option[type + "1"] = optionValue;
+//                 }
+//               });
+//             }
+//             console.log("options----11>", option);
+
+//             // 搜索关键词
+//             if (data[i]["关键词"] && data[i]["关键词"].length > 0) {
+//               if (data[i]["行为"] != "搜索" && !data[i]["搜索天数"]) {
+//                 data[i]["搜索天数"] = data[i]["圈选天数"];
+//               }
+//               if (data[i]["搜索天数"] == 1) {
+//                 alert("无1日搜索");
+//                 $("#pincount_" + i).text("无1日搜索");
+//                 options[i] = undefined;
+//                 continue;
+//               }
+//               option["搜索"] = {
+//                 days: data[i]["行为"] == "搜索" ?
+//                   data[i]["圈选天数"] : data[i]["搜索天数"],
+//                 keywords: data[i]["关键词"],
+//               };
+//             }
+
+//             // 已触达标签（对应表格中的排除任务）
+//             if (data[i]["排除任务"] && data[i]["排除任务"].length > 0) {
+//               option["排除任务"] = data[i]["排除任务"];
+//             }
+
+//             if (data[i]["人群画像"]) {
+//               if (!tags || !tags.hasOwnProperty(data[i]["人群画像"])) {
+//                 alert("无人群画像【" + data[i]["人群画像"] + "】");
+//                 $("#pincount_" + i).text("无人群画像");
+//                 $("#pincount_" + i)
+//                   .parent()
+//                   .addClass("error");
+//                 return;
+//               }
+//               $.extend(option, tags[data[i]["人群画像"]]);
+//             }
+//             // options.push(option);
+
+//             console.log("options----22>", option);
+//             options[i] = option;
+//           }
+
+//           // return;
+//           console.log("人群包名称1--->", options, data, is_check);
+//           // console.log('stop-->停止')
+//           // return
+//           if (is_check) {
+//             // 查询默认执行
+//             for (i = 0; i < options.length; i++) {
+//               if (options[i] == undefined) {
+//                 continue;
+//               }
+//               (function (i) {
+//                 var t = 12500;
+//                 if (options.length <= 10) {
+//                   t = 10000;
+//                 }
+
+//                 setTimeout(function () {
+//                   getPinCount({
+//                       ...options[i],
+//                       data: data[i],
+//                       number: i,
+//                     },
+//                     function (res) {
+//                       if (res.state == "FAILURE" || res.state == "ERROR") {
+//                         $("#pincount_" + i).text(res.result);
+//                         $("#pincount_" + i)
+//                           .parent()
+//                           .addClass("error");
+//                         return;
+//                       }
+//                       $("#pincount_" + i).text(res.data);
+//                       if (res.data) {
+//                         data[i]["pincount"] = parseInt(res.data);
+//                       }
+//                       if (res.id) {
+//                         data[i]["crowdId"] = parseInt(res.id);
+//                       }
+//                     }
+//                   );
+//                 }, (i + 1) * t);
+//               })(i);
+//             }
+//           }
+//           // 执行投放
+//           $("#xzh-btn-multi-execute").bind("click", function () {
+//             var sms_template_id = $("#sms_template_id").val();
+//             var exclude_task_id = $("#xzh-exclude-task").val();
+
+//             for (i = 0; i < options.length; i++) {
+//               // 增加一键重投
+//               if (
+//                 options[i] == undefined ||
+//                 $("#pincount_" + i)
+//                 .parent()
+//                 .hasClass("ok")
+//               ) {
+//                 continue;
+//               }
+//               if (
+//                 $("#pincount_" + i)
+//                 .parent()
+//                 .hasClass("error")
+//               ) {
+//                 $("#pincount_" + i)
+//                   .parent()
+//                   .removeClass("error");
+//                 $("#pincount_" + i).text("重新投放");
+//               }
+//               (function (i) {
+//                 var t = ADD_TASK_TIMER;
+//                 if (options.length <= 3) {
+//                   t = ADD_TASK_LESS_THAN_3_TIMER;
+//                 }
+
+//                 setTimeout(function () {
+//                   console.log(
+//                     "这是第" +
+//                     (i + 1) +
+//                     "个任务，时间为：" +
+//                     moment().format("YYYY-MM-DD HH:mm:ss")
+//                   );
+//                   if (
+//                     exclude_task_id &&
+//                     exclude_task_id.length > 0 &&
+//                     !data[i]["排除任务"].length
+//                   ) {
+//                     data[i]["排除任务"] = exclude_task_id.split(",");
+//                   }
+//                   var res = addTask(
+//                     data[i],
+//                     options[i],
+//                     i,
+//                     data.length,
+//                     function (res) {
+//                       if (res.state == "FAILURE" || res.state == "ERROR") {
+//                         $("#pincount_" + i).text(res.result);
+//                         $("#pincount_" + i)
+//                           .parent()
+//                           .addClass("error");
+//                         $("#xzh-btn-multi-execute").show();
+//                         $("#xzh-btn-multi-execute span").text("失败重投");
+//                         return;
+//                       }
+//                       $("#pincount_" + i).text(res.data);
+//                       $("#pincount_" + i)
+//                         .parent()
+//                         .addClass("ok");
+//                       // 回传数据
+//                       var res_data = $.parseJSON(this.data);
+//                       console.log(this.data);
+//                     }
+//                   );
+//                   if (!res.ok) {
+//                     $("#pincount_" + i).text(res.msg);
+//                     $("#pincount_" + i)
+//                       .parent()
+//                       .addClass("error");
+//                     $("#xzh-btn-multi-execute").show();
+//                     $("#xzh-btn-multi-execute span").text("失败重投");
+//                   }
+//                   console.log("RES" + i, res);
+//                 }, (i + 1) * t + 2000);
+//               })(i);
+//             }
+//             $(this).hide();
+//           });
+
+//           $("#xzh-btn-multi-linker").bind("click", function () {
+//             convertUrls(data);
+//             $(this).remove();
+//             setTimeout(function () {
+//               $("#xzh-btn-multi-execute").show();
+//             }, convert_url * 500);
+//           });
+//         }
+//       );
+//     }
+
+//     // 保存数据
+//     $("#xzh-jp-list").bind("input propertychange", function () {
+//       var val = $("#xzh-jp-list").val();
+//       var key = "xzh_jp_" + pin;
+//       if (val.length == 0) {
+//         localStorage.removeItem(key);
+//       } else {
+//         localStorage.setItem(key, val);
+//       }
+//     });
+//     $("#xzh-tag-list").bind("input propertychange", function () {
+//       var val = $("#xzh-tag-list").val();
+//       var key = "xzh_tag_" + pin;
+//       if (val.length == 0) {
+//         localStorage.removeItem(key);
+//       } else {
+//         localStorage.setItem(key, val);
+//       }
+//     });
+
+//     // 获取短信ID
+//     $("a.link__1hhMI:contains('使用')").bind("click", function () {
+//       $("#sms_template_id").val(
+//         $(this).parent().parent("[data-row-key]").data("row-key")
+//       );
+//     });
+
+
+//   }
+
+//   // 批量短信
+//   if (
+//     $(".add-sms-form__1rIGm").length > 0 ||
+//     $(".add-sms-form__Rdh3C").length > 0
+//   ) {
+//     var multi = $("#dialog-multi-sms");
+//     if (multi.length == 0) {
+//       // 默认值
+//       var sHtml =
+//         '<div class="modal__1URM8" id="dialog-multi-sms" style="left:-454px;background:#fff;width:450px;float:right;position:absolute;top:0;z-index:99999"><div class="ant-modal-content">' +
+//         '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0"><div class="title__2CoZR title__QVWfk has-icon__3dNRu"><span class="icon-wrapper__23vff"><span class="item__1SH3J">创建批量任务</span></div></div></div>' +
+//         '<div class="ant-modal-body"><div class="content__34BVq"><div class="header__1FeKd"></div><div class="main__-PQXV">' +
+//         '<div class="header-panel__2ZvKo send-content__2POVc header-panel__H2eYO send-content__R2NlL"><div class="content-row__3nMQe content-row__IsJpm"><div class="content-col__3ruDH content-col__D6uWW"><div class="header__3Yc35 header__eAyP9"><span class="title__kyJLq title__EG5AW"><div class="title__2CoZR title__QVWfk">批量创建模板</div></span><span class="header-right__2MwE0"></span></div>' +
+//         '<div class="body__2wdPq"><div class="content-panel__1Q316"><textarea id="xzh-sms-list" rows="20" class="ant-input"></textarea></div>' +
+//         "</div></div>" +
+//         "</div>" +
+//         '<div class="ant-modal-footer"><button id="xzh-btn-multi-submit" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>批量创建模板</span></button></div>' +
+//         "</div></div>";
+//       $("div[role='dialog']").append(sHtml);
+
+//       // 批量查询、投放
+//       $("#xzh-btn-multi-submit").bind("click", function () {
+//         // 处理投放任务
+//         var data = table($("#xzh-sms-list").val());
+//         // console.log("DATA", data);
+//         if (!data) {
+//           alert("没有短信数据");
+//           return;
+//         }
+
+//         console.log("DATA", data);
+
+//         var sHtml =
+//           '<table class="data"><tr><th style="width:5%">#</th><th style="width:10%">模板类型</th><th style="width:10%">模板名称</th><th style="width:40%">文案内容</th><th style="width:10%">商品ID</th><th style="width:10%">活动配置key</th><th style="width:10%">优惠券链接</th><th style="width:10%">状态</th></tr>';
+//         for (i = 0; i < data.length; i++) {
+//           sHtml +=
+//             "<tr><td>" +
+//             (i + 1) +
+//             "</td><td>" +
+//             data[i]["模板类型"] +
+//             "</td><td>" +
+//             data[i]["模板名称"] +
+//             '</td><td class="xz-word-break">' +
+//             data[i]["文案内容"] +
+//             "</td>" +
+//             `<td>${data[i]["商品id"] || "--"}</td>` +
+//             `<td>${data[i]["活动配置key"] || "--"}</td>` +
+//             `<td>${data[i]["优惠券链接"] || "--"}</td>` +
+//             '<td id="pincount_' +
+//             i +
+//             '">等待创建</td></tr>';
+//         }
+//         sHtml += "</table>";
+//         sHtml +=
+//           '<input id="sms_signature"><button id="xzh-btn-multi-execute" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green xzh-btn-large"><span>立即创建</span></button>';
+
+//         showMasker(sHtml);
+
+//         // 获取短信签名
+//         $.ajax({
+//           url: "/mkt/api/sms/signature/list",
+//           type: "GET",
+//           dataType: "json",
+//           success: function (res) {
+//             for (var i = 0; i < res.data.length; i++) {
+//               console.log(res.data[i]);
+//               if (res.data[i].status == 1) {
+//                 $("#sms_signature").val(res.data[i].newSignature);
+//                 return;
+//               }
+//             }
+//           },
+//         });
+
+//         // 执行投放
+//         $("#xzh-btn-multi-execute").bind("click", function () {
+//           for (i = 0; i < data.length; i++) {
+//             if (data[i] == undefined) {
+//               continue;
+//             }
+//             (function (i) {
+//               var t = 100;
+
+//               setTimeout(function () {
+//                 var res = addSms(data[i], function (res) {
+//                   if (res.state == "FAILURE" || res.state == "ERROR") {
+//                     $("#pincount_" + i).text(res.result);
+//                     $("#pincount_" + i)
+//                       .parent()
+//                       .addClass("error");
+//                     return;
+//                   }
+//                   $("#pincount_" + i).text(res.data);
+//                   $("#pincount_" + i)
+//                     .parent()
+//                     .addClass("ok");
+//                 });
+//                 if (!res.ok) {
+//                   $("#pincount_" + i).text(res.msg);
+//                   $("#pincount_" + i)
+//                     .parent()
+//                     .addClass("error");
+//                 }
+//                 console.log("RES" + i, res);
+//               }, (i + 1) * ADD_TASK_TIMER);
+//             })(i);
+//           }
+//           $(this).remove();
+//         });
+//       });
+//     }
+
+//     // 保存数据
+//     $("#xzh-jp-list").bind("input propertychange", function () {
+//       var val = $("#xzh-jp-list").val();
+//       var key = "xzh_jp_" + pin;
+//       if (val.length == 0) {
+//         localStorage.removeItem(key);
+//       } else {
+//         localStorage.setItem(key, val);
+//       }
+//     });
+//     $("#xzh-tag-list").bind("input propertychange", function () {
+//       var val = $("#xzh-tag-list").val();
+//       var key = "xzh_tag_" + pin;
+//       if (val.length == 0) {
+//         localStorage.removeItem(key);
+//       } else {
+//         localStorage.setItem(key, val);
+//       }
+//     });
+
+//     // 获取短信ID
+//     $("a.link__1hhMI:contains('使用')").bind("click", function () {
+//       $("#sms_template_id").val(
+//         $(this).parent().parent("[data-row-key]").data("row-key")
+//       );
+//     });
+//   }
+
+//   // 批量删除人群包
+//   if (
+//     $("#rc-tabs-0-panel-crowd_list").length > 0 &&
+//     $("#xzh-btn-one-click-clear").length == 0
+//   ) {
+//     $(".button-wrapper__M8J0Q")
+//       // .eq(1)
+//       .append(
+//         `<button id="xzh-btn-one-click-clear" type="button" class="ant-btn css-r3n9ey ant-btn-default button__Q1Ng3 xz-button__Dw8L6 button-type-primary__R405K"><span>一键清除</span></button>`
+//       );
+
+//     $("#xzh-btn-one-click-clear").bind("click", function () {
+//       var sHtml = `<style>
+//       #tablist ul,#tablist li{list-style:none}#tablist ul{overflow:hidden}#tablist li{float:left;color:#333;padding:4px 40px;margin-right:8px;cursor:pointer;border:1px solid #ccc;transition:all ease .3s}.box{width:88%;margin:8px;position:relative}#tablist li:hover{background:#44ac55;color:#fff}#tablist li.tabin{border:1px solid #079982;background:#079982;color:#fff}.content-box{width:100%;height:180px;background:#eee;position:absolute;left:0;top:30px;overflow:hidden;border:1px solid #079982}.content{clear:both;color:#333;padding:10px;display:none;position:absolute;top:0;left:0}.content-box .contentin{display:block;}.content h1{font-size:18px;margin-bottom:20px;margin-top:20px}.content p{font-size:12px;margin:4px 12px}.content p span.title{font-weight:bold;color:#999}
+//       table.data th{padding:0;}table.data tr.total td{background-color:#ffe}table.data tr td.percent{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYGWM4/f/8fwAIywOZbbg6KgAAAABJRU5ErkJggg==);background-repeat:no-repeat;background-size:1px 50%;background-position:center left;background-color:#f3fdf6;}table.data tr td.percent.percent_red{background-color:#ffecee;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYGWP4f/rCfwAJAQOaUJXpYAAAAABJRU5ErkJggg==);}</style>
+
+//         <div style="padding:8px">加载第<input id="xzh-data-page-start" style="width:36px;padding:0 2px;text-align:center" class="ant-input" value="1" />到<input id="xzh-data-page" style="width:36px;padding:0 2px;text-align:center" class="ant-input" value="1" />页人群包，
+//         <button id="xzh-btn-load-crowd-data" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>立即获取</span></button>
+//         <button id="one-click-clear" type="button" class="ant-btn button__1iBD7 button-type-primary__2i--z xzh-btn-green"><span>一键清除</span></button></div>
+//         <div class="tableWrapper">
+//         <table class="data">
+//           <tr><th width="5%">#</th><th width="15%">人群包ID</th><th width="25%">人群包名称</th><th width="10%">创建时间</th><th width="10%">操作</th></tr>
+//         </table>
+//         </div>
+//         `;
+//       showMasker(sHtml);
+
+//       $(".ant-checkbox-wrapper input:checkbox").bind("click", function () {
+//         $(this).parent().toggleClass("ant-checkbox-checked");
+//       });
+
+//       var update_data = {};
+//       var newTable = `<table class="data">
+//             <tr><th width="5%">#</th><th width="15%">人群包ID</th><th width="25%">人群包名称</th><th width="10%">创建时间</th><th width="10%">操作</th></tr>
+//             </table>`;
+//       $("#xzh-btn-load-crowd-data").bind("click", function () {
+//         $("table.data").remove();
+//         $(".tableWrapper").append(newTable);
+//         var page = $("#xzh-data-page").val();
+//         var start_page = $("#xzh-data-page-start").val();
+//         getCrowdDataByPage(page).then((data) => {
+//           data = data.result;
+//           // 加载数据到页面
+//           console.log(data);
+//           var sHtml = "";
+//           for (var i = (start_page - 1) * 10; i < data.length; i++) {
+//             sHtml +=
+//               `<tr data-id="` +
+//               data[i].id +
+//               `">
+//             <td>` +
+//               (i + 1) +
+//               `</td>
+//             <td>` +
+//               data[i].id +
+//               `</td>
+//             <td>` +
+//               data[i].name +
+//               `</td>
+//             <td>` +
+//               data[i].createTime +
+//               `</td>
+//             <td><a>取消</a></td></tr>`;
+//             update_data[data[i].id] = {
+//               id: data[i].id,
+//               name: data[i].name,
+//             };
+//           }
+//           $("table.data").append(sHtml);
+//           $("table.data td a").bind("click", function () {
+//             var tr = $(this).parent().parent();
+//             delete update_data[tr.data("id")];
+//             tr.remove();
+//           });
+//         });
+//       });
+
+//       $("#one-click-clear").bind("click", function () {
+//         var crowdIds = [];
+//         Object.keys(update_data).forEach((key) => {
+//           crowdIds.push(key);
+//         });
+//         $.ajax({
+//           url: "/mkt/api/crowd/delete",
+//           type: "POST",
+//           dataType: "json",
+//           data: JSON.stringify(crowdIds),
+//           contentType: "application/json",
+//           success: function (res) {
+//             $("table.data").remove();
+//             $(".tableWrapper").append(newTable);
+//           },
+//         });
+//       });
+//     });
+//   }
+
+
+// });
 
 // 底部工具条
 $("#root").append('<div style="height:64px;"></div>');
@@ -4076,6 +5261,12 @@ function getOptions(data, func, withApp) {
       case "品类浏览4":
       case "品类付款4":
       case "品类加购4":
+      case "品类浏览5":
+      case "品类付款5":
+      case "品类加购5":
+      case "品类浏览6":
+      case "品类付款6":
+      case "品类加购6":
         console.log("品类---->", data[k]);
         let cateKey = k;
         if (k.length >= 4) {
@@ -4665,7 +5856,7 @@ function getOptions(data, func, withApp) {
     crowdOptions = {
       // name: (data["data"] && data["data"]["人群包名称"]) || "",
       name: isUat ?
-           uatName  : (data["data"] && data["data"]["人群包名称"]) ||
+        uatName : (data["data"] && data["data"]["人群包名称"]) ||
         (data["data"] && data["data"]["任务名"]) ||
         `预估人数-${moment().format("HH:mm:ss")}`,
       labelOptions: [{
@@ -5073,6 +6264,7 @@ function getCateData(name, categoryTreeData) {
       });
     }
   });
+  console.log('cateData--->', cateData)
   return cateData
 }
 
@@ -5090,6 +6282,9 @@ function getCatsDataFromCatNames(name) {
   }
   console.log('getCatsDataFromCatNames--->data', data)
   if (data.categoryId) {
+    if (data?.categoryClass === 1) {
+      id = `${data.levelOneCategoryId}_${data.categoryId}`
+    }
     if (data?.categoryClass === 2) {
       id = `${data.levelOneCategoryId}_${data.levelTwoCategoryId}_${data.categoryId}`
     }
@@ -5349,7 +6544,7 @@ function addTask(data, options, i, length, func) {
   }
 
   if (is_create_crowd) {
-    return 
+    return
   }
 
   // 上限
@@ -5505,223 +6700,6 @@ function getTemplateIdWithName(name, channel, channelDesc) {
     },
   });
   return id;
-}
-
-// 替换为a标签
-const linkUrlElement = (url) =>
-  `<a href="${url}" target="_self" class="J_Link">${url}</a>`;
-
-// 创建短信
-function addSms(data, func) {
-  console.log("sms--->", data);
-  let channel = data["模板类型"].includes("短信") ?
-    "sms" :
-    data["模板类型"].includes("咚咚") ?
-    "dd" :
-    "";
-  if (!channel) {
-    return {
-      ok: false,
-      msg: "模板类型有误"
-    };
-  }
-  let content = data["文案内容"];
-  if (channel === "dd") {
-    content = content.replace(/ +/g, "&nbsp;");
-  }
-  // 转化 链接
-  content = Autolinker.link(content, {
-    replaceFn: function (match) {
-      switch (match.type) {
-        case "url":
-          const matchedText = match.getMatchedText();
-          let shortUrl = getShortUrl(matchedText);
-          console.log("shortUrl--->", shortUrl);
-          if (!shortUrl) {
-            return "短链转化错误，请核查！";
-          }
-          if (channel === "sms") {
-            return shortUrl;
-          }
-          let transUrl = "";
-          if (
-            shortUrl.toLowerCase().startsWith("http://") ||
-            shortUrl.toLowerCase().startsWith("https://")
-          ) {
-            transUrl = shortUrl;
-          } else if (shortUrl.startsWith("//")) {
-            transUrl = `https:${shortUrl}`;
-          } else {
-            transUrl = `https://${shortUrl}`;
-          }
-          console.log("transUrl--->", transUrl);
-          return linkUrlElement(transUrl); // let Autolinker perform its normal anchor tag replacement
-      }
-    },
-  });
-  if (content.includes("短链转化错误")) {
-    return {
-      ok: false,
-      msg: "URL地址不合法，只能是jd.com，jd.hk，item.jd.com，m.jd.com，jd.local后缀的链接",
-    };
-  }
-  if (channel === "dd") {
-    // 模拟为富文本内容
-    content = `<p>${content}</p>`;
-  }
-  const params = {
-    // name: isUat ? `测试-${moment().format("HH:mm:ss")}` : data["模板名称"],
-    name: data["模板名称"],
-    content,
-    channel,
-  };
-  // 富媒体咚咚-商品
-  if (data["商品id"] && channel === "dd") {
-    let extension = {
-      type: 3,
-      data: {
-        skuIds: data["商品id"].split(",").map((sku) => Number(sku)),
-      },
-    };
-    console.log("extension--->", extension);
-    params.extension = JSON.stringify(extension);
-  }
-  // 富媒体咚咚-优惠券
-  if (data["活动配置key"] && data["优惠券链接"] && channel === "dd") {
-    let couponInfo = getCouponInfo(data["活动配置key"]);
-    console.log("couponInfo--->", couponInfo);
-    let extension = {
-      type: 2,
-      data: {
-        couponName: couponInfo.name,
-        couponBeginTime: couponInfo.beginTime,
-        couponEndTime: couponInfo.endTime,
-        couponKey: data["活动配置key"],
-        couponUrl: data["优惠券链接"],
-      },
-    };
-    console.log("extension--->", extension);
-    params.extension = JSON.stringify(extension);
-  }
-  console.log("params--->", params);
-  // return;
-
-  // 判断短信长度
-  if (params.channel == "sms") {
-    // 短信签名
-    var sms_signature = $("#sms_signature").val();
-    if (sms_signature.length == 0) {
-      return {
-        ok: false,
-        msg: "签名有误"
-      };
-    }
-    // 超过70个字
-    if (params.content.length + sms_signature.length + 7 > 70) {
-      return {
-        ok: false,
-        msg: "超过70个字"
-      };
-    }
-  }
-  // return
-  $.ajax({
-    url: "/mkt/api/template/add",
-    type: "POST",
-    dataType: "json",
-    data: JSON.stringify(params),
-    contentType: "application/json",
-    success: function (res) {
-      if (res.state === "SUCCESS") {
-        getTempleteId(params.name, func);
-      } else {
-        func(res);
-      }
-    },
-  });
-
-  return {
-    ok: true,
-    msg: "成功"
-  };
-}
-
-function getTempleteId(name, func) {
-  console.log("getTempleteId--->", name);
-  $.ajax({
-    url: `/mkt/api/template/list?pageNum=1&pageSize=10`,
-    type: "GET",
-    dataType: "json",
-    async: false,
-    contentType: "application/json",
-    success: function (res) {
-      if (res.state === "SUCCESS") {
-        const templateList = res.data.templateList;
-        if (templateList.length > 0) {
-          const curTemplate = templateList[0];
-          if (curTemplate) {
-            func({
-              data: curTemplate.id
-            });
-          } else {
-            func({
-              data: "未生成此模板！"
-            });
-          }
-        }
-      }
-    },
-  });
-}
-
-// 获取短链接
-function getShortUrl(longUrl = "") {
-  let shortUrl = "";
-  $.ajax({
-    url: `/mkt/api/template/short-url?longUrl=${longUrl}`,
-    type: "GET",
-    dataType: "json",
-    async: false,
-    contentType: "application/json",
-    success: function (res) {
-      if (res.state === "SUCCESS") {
-        shortUrl = res.data;
-      }
-    },
-  });
-  return shortUrl;
-}
-
-// 获取优惠券信息
-function getCouponInfo(key) {
-  let couponInfo = null;
-  $.ajax({
-    url: `/mkt/api/template/view/coupon/${key}`,
-    type: "GET",
-    dataType: "json",
-    async: false,
-    contentType: "application/json",
-    success: function (res) {
-      if (res.state === "SUCCESS") {
-        couponInfo = res.data;
-      }
-    },
-  });
-  return couponInfo;
-}
-
-function findHttpString(s) {
-  var reg =
-    /(https?|http|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/g;
-  s = s.match(reg);
-  if (s && s.length) {
-    return s[0];
-  }
-  return "";
-}
-
-function replaceLinkToElement(link) {
-  return `<a href="${link}" target="_self" class="J_Link">${link}</a>`;
 }
 
 function splitArray(
